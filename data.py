@@ -7,23 +7,17 @@ def save_model(model, kwargs):
 
     model.save()
 
+    return model
+
 
 def set_company(symbol, **kwargs):
-    model, created = database.Company.create_or_get(symbol=symbol, **kwargs)
-
-    if not created:
-        save_model(model, kwargs)
-
-    return model
+    model, _ = database.Company.create_or_get(symbol=symbol, **kwargs)
+    return save_model(model, kwargs)
 
 
 def set_financial_data(company, date, **kwargs):
-    model, created = database.FinancialData.create_or_get(company=company, date=date, **kwargs)
-
-    if not created:
-        save_model(model, kwargs)
-
-    return model
+    model, _ = database.FinancialData.create_or_get(company=company, date=date, **kwargs)
+    return save_model(model, kwargs)
 
 
 def get_companies():

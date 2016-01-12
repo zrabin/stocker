@@ -15,5 +15,6 @@ $ ./run python database.py
 ./run import_companies.py
 
 # populate current finance data
-./run import_financial_data.py
+./run import_financial_data.py yahoo_finance_quotes
+./run import_financial_data.py yahoo_finance_ks
 ```

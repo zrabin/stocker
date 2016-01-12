@@ -31,6 +31,8 @@ class FinancialData(BaseModel):
     peg_ratio = DecimalField(null=True)
     one_yr_target_price = DecimalField(null=True)
     dividend_yield = DecimalField(null=True)
+    return_on_assets = DecimalField(null=True)
+    return_on_equity = DecimalField(null=True)
 
     class Meta:
         indexes = (
