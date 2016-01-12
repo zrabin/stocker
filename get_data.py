@@ -3,6 +3,7 @@
 import json
 import urllib2
 
+# get list of tickers from tickers.txt file
 def getTickerList():
     with open("tickers.txt") as ftickers:
         ticker_lines = ftickers.readlines()
@@ -13,9 +14,10 @@ def getTickerList():
         ticker_list.append(z)
     return ticker_list
 
- 
+# accept an array of tickers, build a url and query yahoo
 def getTickerData(tlist):
     query = ""
+    #Don't build a url with more than 100 tickers
     for ticker in tlist[:1000]:
         query = query + "%22" + ticker + "%22,"
     query = query[:-1]
