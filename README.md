@@ -9,7 +9,7 @@ $ sudo pip install virtualenv
 $ ./build
 
 # setup database
-$ ./run python database.py
+$ ./run database.py
 
 # populate companies in database
 ./run import_companies.py
