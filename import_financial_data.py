@@ -14,7 +14,7 @@ import data
 
 
 BATCH = 50
-LOGGER = logging.getLogger('import_finance')
+LOGGER = logging.getLogger('import_financial_data')
 MONEY = { '': 10**3, 'M': 10**6, 'B': 10**9 }
 MONEY_RE = re.compile(r'^\$?(\-?\d+\.?\d*)([MB])?$')
 
@@ -156,7 +156,7 @@ def yahoo_finance_ks(sleep_time):
             LOGGER.info('Skipping ks: %s' % company.symbol)
 
 
-if __name__ == '__main__':
+def main():
     common.setup_logging()
 
     parser = argparse.ArgumentParser()
@@ -172,3 +172,7 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     args.func(sleep_time=args.sleep_time)
+
+
+if __name__ == '__main__':
+    main()

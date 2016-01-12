@@ -1,13 +1,17 @@
 #!/usr/bin/env python
 
 import StringIO
+import argparse
 import csv
+import logging
 import requests
 
+import common
 import data
 
 
 EXCHANGES = ('nasdaq', 'nyse', 'amex')
+LOGGER = logging.getLogger('import_companies')
 
 
 class Company(object):
@@ -67,7 +71,14 @@ def get_companies(exchange):
 
 
 def main():
+    common.setup_logging()
+
+    parser = argparse.ArgumentParser()
+    args = parser.parse_args()
+
     for exchange in EXCHANGES:
+        LOGGER.info('Getting exchange: %s' % exchange)
+
         for company in get_companies(exchange):
             data.set_company(
                 symbol=company.symbol,
