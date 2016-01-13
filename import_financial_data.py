@@ -23,16 +23,24 @@ def get_month():
     now = datetime.datetime.now().date()
     return datetime.date(now.year, now.month, 1)
 
-
 def decode_none(value):
     if value == 'N/A':
         return None
 
     return value
 
+def check_valid(value):
+    value = decode_none(value)
+    
+    if value is None:
+        return value
+    
+    value = value.replace(',', '')
+    
+    return value
 
 def decode_float(value):
-    value = decode_none(value)
+    value = check_valid(value)
 
     if value is None:
         return value
@@ -41,7 +49,7 @@ def decode_float(value):
 
 
 def decode_percent(value):
-    value = decode_none(value)
+    value = check_valid(value)
 
     if value is None:
         return value
@@ -54,7 +62,7 @@ def decode_percent(value):
 
 
 def decode_money(value):
-    value = decode_none(value)
+    value = check_valid(value)
 
     if not value:
         return None
