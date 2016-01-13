@@ -24,15 +24,21 @@ class Company(BaseModel):
 class FinancialData(BaseModel):
     company = ForeignKeyField(Company)
     date = DateField()
+    ask = DecimalField(null=True)
     book_value = DecimalField(null=True)
     market_cap = DecimalField(null=True)
     ebitda = DecimalField(null=True)
-    pe_ratio = DecimalField(null=True)
+    pe_ratio_ttm = DecimalField(null=True)
+    eps_estimate_qtr = DecimalField(null=True)
     peg_ratio = DecimalField(null=True)
     one_yr_target_price = DecimalField(null=True)
     dividend_yield = DecimalField(null=True)
     return_on_assets = DecimalField(null=True)
     return_on_equity = DecimalField(null=True)
+    change_year_low_per = DecimalField(null=True)
+    change_year_high_per = DecimalField(null=True)
+    one_yr_target_price = DecimalField(null=True)
+    dividend_yeild = DecimalField(null=True)
 
     class Meta:
         indexes = (
