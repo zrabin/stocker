@@ -4,5 +4,3 @@ ON company.id = financialdata.company_id
 WHERE financialdata.pe_ratio_ttm > 0 
 ORDER BY financialdata.pe_ratio_ttm 
 DESC;
-
-
