@@ -13,7 +13,7 @@ import common
 import data
 import Quandl
 
-BATCH = 50
+BATCH = 15
 LOGGER = logging.getLogger('import_financial_data')
 MONEY = { '': 10**3, 'M': 10**6, 'B': 10**9 }
 MONEY_RE = re.compile(r'^\$?(\-?\d+\.?\d*)([MB])?$')
@@ -89,14 +89,24 @@ def quandl_assets(sleep_time):
 
         batch = dict([(c.symbol, c) for c in batch])
         symbols = batch.keys()
+        batchcodes = []
         for x in symbols:
-            qcode = "SEC/" + x + "_ASSETS_Q"
+            code_net_income = "RAYMOND/" + x + "_NET_INCOME_Q.1"
+            code_total_assets = "RAYMOND/" + x + "_TOTAL_ASSETS_Q.1"
+            
             try:
-                print Quandl.get(qcode, rows="1", returns="numpy")
+                net_income = Quandl.get(code_net_income, rows="1", returns="numpy", authtoken="tkiNbnpxozdZj4-o-iWY")
             except:
-                print "nope no " + x 
+                net_income = "N/A"
                 continue
 
+            try:
+                total_assets = Quandl.get(code_total_assets, rows="1", returns="numpy", authtoken="tkiNbnpxozdZj4-o-iWY")
+            except:
+                total_assets = "N/A"
+                continue
+            print net_income
+            print total_assets
 
 def yahoo_finance_quotes(sleep_time):
     month = get_month()
