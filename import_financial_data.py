@@ -77,6 +77,11 @@ def decode_money(value):
 
     return int(value * MONEY[abbr])
 
+def decode_quandl(string):
+    string = str(string)
+    values = re.search(r'\d{4}.*', string)
+    values = values.group()
+    return values
 
 def quandl_assets(sleep_time):
     month = get_month()
@@ -91,22 +96,25 @@ def quandl_assets(sleep_time):
         symbols = batch.keys()
         batchcodes = []
         for x in symbols:
-            code_net_income = "RAYMOND/" + x + "_NET_INCOME_Q.1"
-            code_total_assets = "RAYMOND/" + x + "_TOTAL_ASSETS_Q.1"
+            code_net_income = "RAYMOND/" + x + "_NET_INCOME_Q"
+            code_total_assets = "RAYMOND/" + x + "_TOTAL_ASSETS_Q"
             
             try:
-                net_income = Quandl.get(code_net_income, rows="1", returns="numpy", authtoken="tkiNbnpxozdZj4-o-iWY")
+                net_income = Quandl.get(code_net_income, rows="1", authtoken="tkiNbnpxozdZj4-o-iWY")
+                net_income = decode_quandl(net_income)
             except:
                 net_income = "N/A"
                 continue
 
             try:
-                total_assets = Quandl.get(code_total_assets, rows="1", returns="numpy", authtoken="tkiNbnpxozdZj4-o-iWY")
+                total_assets = Quandl.get(code_total_assets, rows="1", authtoken="tkiNbnpxozdZj4-o-iWY")
+                total_assets = decode_quandl(total_assets)
             except:
                 total_assets = "N/A"
                 continue
-            print net_income
-            print total_assets
+            
+            print "net income of %s is %s" % (x, net_income)
+            print "total_assets of %s are %s" % (x, total_assets)
 
 def yahoo_finance_quotes(sleep_time):
     month = get_month()
