@@ -11,7 +11,7 @@ from bs4 import BeautifulSoup
 
 import common
 import data
-
+import Quandl
 
 BATCH = 50
 LOGGER = logging.getLogger('import_financial_data')
@@ -78,6 +78,26 @@ def decode_money(value):
     return int(value * MONEY[abbr])
 
 
+def quandl_assets(sleep_time):
+    month = get_month()
+
+    companies = list(data.get_companies())
+    companies = [companies[i:i+BATCH] for i in range(0, len(companies), BATCH)]
+
+    for i, batch in enumerate(companies):
+        if i > 0: time.sleep(sleep_time)
+
+        batch = dict([(c.symbol, c) for c in batch])
+        symbols = batch.keys()
+        for x in symbols:
+            qcode = "SEC/" + x + "_ASSETS_Q"
+            try:
+                print Quandl.get(qcode, rows="1", returns="numpy")
+            except:
+                print "nope no " + x 
+                continue
+
+
 def yahoo_finance_quotes(sleep_time):
     month = get_month()
 
@@ -88,7 +108,6 @@ def yahoo_finance_quotes(sleep_time):
         if i > 0: time.sleep(sleep_time)
 
         batch = dict([(c.symbol, c) for c in batch])
-
         url = 'https://query.yahooapis.com/v1/public/yql'
         params = {
             'q': 'select * from yahoo.finance.quotes where symbol IN ("%s")' % '", "'.join(batch.keys()),
@@ -114,7 +133,6 @@ def yahoo_finance_quotes(sleep_time):
                 one_yr_target_price=decode_float(item.get('OneyrTargetPrice')),
                 dividend_yield=decode_float(item.get('DividendYield')),
             )
-
 
 def yahoo_finance_ks(sleep_time):
     month = get_month()
@@ -166,6 +184,7 @@ def yahoo_finance_ks(sleep_time):
             LOGGER.info('Skipping ks: %s' % company.symbol)
 
 
+
 def main():
     common.setup_logging()
 
@@ -176,10 +195,14 @@ def main():
 
     parser_yahoo_finance_quotes = subparsers.add_parser('yahoo_finance_quotes')
     parser_yahoo_finance_quotes.set_defaults(func=yahoo_finance_quotes)
+    
+    parser_quandl_assets = subparsers.add_parser('quandl_assets')
+    parser_quandl_assets.set_defaults(func=quandl_assets)
 
-    parser_yahoo_finance_ks = subparsers.add_parser('yahoo_finance_ks')
-    parser_yahoo_finance_ks.set_defaults(func=yahoo_finance_ks)
 
+#    parser_yahoo_finance_ks = subparsers.add_parser('yahoo_finance_ks')
+#    parser_yahoo_finance_ks.set_defaults(func=yahoo_finance_ks)
+    
     args = parser.parse_args()
     args.func(sleep_time=args.sleep_time)
 
