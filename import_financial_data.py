@@ -13,6 +13,7 @@ import common
 import data
 import Quandl
 
+QUAND_KEY = "1BCHxHp1ExoE4hXRmafE"
 BATCH = 15
 LOGGER = logging.getLogger('import_financial_data')
 MONEY = { '': 10**3, 'M': 10**6, 'B': 10**9 }
@@ -23,29 +24,34 @@ def get_month():
     now = datetime.datetime.now().date()
     return datetime.date(now.year, now.month, 1)
 
-def decode_none(value):
+def check_valid(value):
+    
     if value == 'N/A':
         return None
 
-    return value
-
-def check_valid(value):
-    value = decode_none(value)
-    
     if value is None:
         return value
-    
-    value = value.replace(',', '')
-    
+
+    if isinstance(value, basestring):
+        value = value.replace(',', '')
+        return value
+        
     return value
 
 def decode_float(value):
+    if isinstance(value, float):
+        return value
+    
     value = check_valid(value)
 
     if value is None:
         return value
 
-    return float(value)
+    try:
+        return float(value)
+    except:
+        print "could not convert value %s" % value
+        return value
 
 
 def decode_percent(value):
@@ -81,40 +87,55 @@ def decode_quandl(string):
     string = str(string)
     values = re.search(r'\d{4}.*', string)
     values = values.group()
-    return values
+    val_list = values.split(' ')
+    return float(val_list[-1:])
 
 def quandl_assets(sleep_time):
     month = get_month()
 
     companies = list(data.get_companies())
-    companies = [companies[i:i+BATCH] for i in range(0, len(companies), BATCH)]
 
-    for i, batch in enumerate(companies):
+    for i, company in enumerate(companies):
         if i > 0: time.sleep(sleep_time)
+        
+        financials = []
+        
+        code_net_income = "RAYMOND/" + company.symbol + "_NET_INCOME_Q"
+        code_total_assets = "RAYMOND/" + company.symbol + "_TOTAL_ASSETS_Q"
+        
+        try:
+            net_income = Quandl.get(code_net_income, rows="1", authtoken=QUAND_KEY)
+            net_income = decode_quandl(net_income)
+            financials.append(["net_income", net_income])
+        except:
+            net_income = "N/A"
+            financials.append(["net_income", net_income])
+        
+        try:
+            total_assets = Quandl.get(code_total_assets, rows="1", authtoken=QUAND_KEY)
+            total_assets = decode_quandl(total_assets)
+            financials.append(["total_assets", total_assets])
+        except:
+            total_assets = "N/A"
+            financials.append(["total_assets", total_assets])
+        
+        for key, value in financials:
+            value = decode_float(value)
+            print company.symbol, key, value 
+            if key == "net_income":
+                data.set_financial_data(
+                    company=company, 
+                    date=month,
+                    net_income=value,
+                    )
+        
+            elif key == "total_assets":
+                data.set_financial_data(
+                company=company, 
+                date=month,
+                total_assets=value,
+                )
 
-        batch = dict([(c.symbol, c) for c in batch])
-        symbols = batch.keys()
-        batchcodes = []
-        for x in symbols:
-            code_net_income = "RAYMOND/" + x + "_NET_INCOME_Q"
-            code_total_assets = "RAYMOND/" + x + "_TOTAL_ASSETS_Q"
-            
-            try:
-                net_income = Quandl.get(code_net_income, rows="1", authtoken="tkiNbnpxozdZj4-o-iWY")
-                net_income = decode_quandl(net_income)
-            except:
-                net_income = "N/A"
-                continue
-
-            try:
-                total_assets = Quandl.get(code_total_assets, rows="1", authtoken="tkiNbnpxozdZj4-o-iWY")
-                total_assets = decode_quandl(total_assets)
-            except:
-                total_assets = "N/A"
-                continue
-            
-            print "net income of %s is %s" % (x, net_income)
-            print "total_assets of %s are %s" % (x, total_assets)
 
 def yahoo_finance_quotes(sleep_time):
     month = get_month()

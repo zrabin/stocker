@@ -39,6 +39,8 @@ class FinancialData(BaseModel):
     change_year_high_per = DecimalField(null=True)
     one_yr_target_price = DecimalField(null=True)
     dividend_yeild = DecimalField(null=True)
+    net_income = DecimalField(null=True)
+    total_assets = DecimalField(null=True)
 
     class Meta:
         indexes = (
