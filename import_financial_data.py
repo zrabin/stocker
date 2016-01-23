@@ -108,6 +108,8 @@ def quandl_assets(sleep_time):
         code_net_income = "RAYMOND/" + company.symbol + "_NET_INCOME_Q"
         code_total_assets = "RAYMOND/" + company.symbol + "_TOTAL_ASSETS_Q"
         
+        LOGGER.info('Getting quandl income & assets for: %s' % company.symbol)                          
+
         try:
             net_income = Quandl.get(code_net_income, rows="1", authtoken=QUAND_KEY)
             net_income = decode_quandl(net_income)
@@ -126,9 +128,9 @@ def quandl_assets(sleep_time):
         
         for key, value in financials:
             value = decode_float(value)
-            print company.symbol, key, value
             
             if key == "net_income":
+                LOGGER.info('%s --- %s: %s' % (company.symbol, key, value))                          
                 data.set_financial_data(
                     company=company, 
                     date=month,
@@ -136,6 +138,7 @@ def quandl_assets(sleep_time):
                     )
         
             elif key == "total_assets":
+                LOGGER.info('%s --- %s: %s' % (company.symbol, key, value))                          
                 data.set_financial_data(
                 company=company, 
                 date=month,
