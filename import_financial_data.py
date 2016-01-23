@@ -25,17 +25,17 @@ def get_month():
     return datetime.date(now.year, now.month, 1)
 
 def check_valid(value):
-    
     if value == 'N/A':
-        return None
-
+        value = None
+        return value
+    
     if value is None:
+        value = None
         return value
-
-    if isinstance(value, basestring):
-        value = value.replace(',', '')
-        return value
-        
+    
+    value = str(value)
+    value = value.replace(',', '')
+    
     return value
 
 def decode_float(value):
@@ -43,15 +43,18 @@ def decode_float(value):
         return value
     
     value = check_valid(value)
-
+    
     if value is None:
         return value
-
+    
     try:
-        return float(value)
+        value = float(value)
+        return value
+    
     except:
         print "could not convert value %s" % value
-        return value
+    
+    return value
 
 
 def decode_percent(value):
@@ -84,11 +87,13 @@ def decode_money(value):
     return int(value * MONEY[abbr])
 
 def decode_quandl(string):
+    value_list = []
     string = str(string)
-    values = re.search(r'\d{4}.*', string)
-    values = values.group()
-    val_list = values.split(' ')
-    return float(val_list[-1:])
+    value = re.search(r'\d{4}.*', string)
+    value = value.group()
+    value_list = value.split(' ')
+    value = (value_list[-1])
+    return value
 
 def quandl_assets(sleep_time):
     month = get_month()
@@ -121,7 +126,8 @@ def quandl_assets(sleep_time):
         
         for key, value in financials:
             value = decode_float(value)
-            print company.symbol, key, value 
+            print company.symbol, key, value
+            
             if key == "net_income":
                 data.set_financial_data(
                     company=company, 
