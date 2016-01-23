@@ -14,7 +14,7 @@ import data
 import Quandl
 
 QUAND_KEY = "1BCHxHp1ExoE4hXRmafE"
-BATCH = 15
+BATCH = 50
 LOGGER = logging.getLogger('import_financial_data')
 MONEY = { '': 10**3, 'M': 10**6, 'B': 10**9 }
 MONEY_RE = re.compile(r'^\$?(\-?\d+\.?\d*)([MB])?$')
