@@ -245,8 +245,8 @@ def main():
     parser_quandl_assets.set_defaults(func=quandl_assets)
 
 
-#    parser_yahoo_finance_ks = subparsers.add_parser('yahoo_finance_ks')
-#    parser_yahoo_finance_ks.set_defaults(func=yahoo_finance_ks)
+    parser_yahoo_finance_ks = subparsers.add_parser('yahoo_finance_ks')
+    parser_yahoo_finance_ks.set_defaults(func=yahoo_finance_ks)
     
     args = parser.parse_args()
     args.func(sleep_time=args.sleep_time)
