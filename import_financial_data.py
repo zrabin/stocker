@@ -95,7 +95,7 @@ def decode_quandl(string):
     value = (value_list[-1])
     return value
 
-def quandl_assets(sleep_time):
+def quandl(sleep_time):
     month = get_month()
 
     companies = list(data.get_companies())
@@ -182,6 +182,7 @@ def yahoo_finance_quotes(sleep_time):
                 dividend_yield=decode_float(item.get('DividendYield')),
             )
 
+
 def yahoo_finance_ks(sleep_time):
     month = get_month()
     url = 'https://finance.yahoo.com/q/ks'
@@ -232,7 +233,6 @@ def yahoo_finance_ks(sleep_time):
             LOGGER.info('Skipping ks: %s' % company.symbol)
 
 
-
 def main():
     common.setup_logging()
 
@@ -244,8 +244,8 @@ def main():
     parser_yahoo_finance_quotes = subparsers.add_parser('yahoo_finance_quotes')
     parser_yahoo_finance_quotes.set_defaults(func=yahoo_finance_quotes)
     
-    parser_quandl_assets = subparsers.add_parser('quandl_assets')
-    parser_quandl_assets.set_defaults(func=quandl_assets)
+    parser_quandl_assets = subparsers.add_parser('quandl')
+    parser_quandl_assets.set_defaults(func=quandl)
 
 
     parser_yahoo_finance_ks = subparsers.add_parser('yahoo_finance_ks')
