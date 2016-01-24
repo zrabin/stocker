@@ -98,7 +98,7 @@ def decode_quandl(string):
 def quandl(sleep_time):
     month = get_month()
 
-    companies = list(data.get_companies())
+    companies = list(data.get_tech_companies())
 
     for i, company in enumerate(companies):
         if i > 0: time.sleep(sleep_time)
@@ -149,7 +149,7 @@ def quandl(sleep_time):
 def yahoo_finance_quotes(sleep_time):
     month = get_month()
 
-    companies = list(data.get_companies())
+    companies = list(data.get_tech_companies())
     companies = [companies[i:i+BATCH] for i in range(0, len(companies), BATCH)]
 
     for i, batch in enumerate(companies):
@@ -187,7 +187,7 @@ def yahoo_finance_ks(sleep_time):
     month = get_month()
     url = 'https://finance.yahoo.com/q/ks'
 
-    companies = list(data.get_companies())
+    companies = list(data.get_tech_companies())
 
     for i, company in enumerate(companies):
         if i > 0: time.sleep(sleep_time)

@@ -24,3 +24,9 @@ def get_companies():
     return database.Company.select().where(
         ~(database.Company.symbol ** '%^%' | database.Company.symbol ** '%.%')
     )
+
+def get_tech_companies():
+    return database.Company.select().where(
+        ~(database.Company.symbol ** '%^%' | database.Company.symbol ** '%.%' )
+        & (database.Company.sector == 'Technology')
+    )
