@@ -3,31 +3,32 @@
 import os
 import database as d
 
-
-
 def tech_50_ranked_pe_ratio():
     sql = (d.Company
                 .select(d.Company.name, d.Company.symbol, d.FinancialData.pe_ratio_ttm)
                 .join(d.FinancialData, on=(d.Company == d.FinancialData.company_id))
-                .where(d.Company.sector == 'Technology')
+                .where((d.Company.sector == 'Technology') & (d.FinancialData.pe_ratio_ttm != None))
                 .order_by(d.FinancialData.pe_ratio_ttm)
             )
-    return sql
+    
+    for rank, company in enumerate(sql):
+        print rank, company.name, company.financialdata.pe_ratio_ttm
 
 
 def tech_50_ranked_roa():
     sql = (d.Company
             .select(d.Company.name, d.Company.symbol, d.FinancialData.return_on_assets)
             .join(d.FinancialData, on=(d.FinancialData.company_id == d.Company))
-            .where(d.Company.sector == 'Technology')
-            .order_by(d.FinancialData.return_on_assets)
+            .where((d.Company.sector == 'Technology') & (d.FinancialData.return_on_assets != None))
+            .order_by(d.FinancialData.return_on_assets.desc())
             )
-    return sql
+    
+    for rank, company in enumerate(sql):
+        print rank, company.name, company.financialdata.return_on_assets
 
 
-for rank, i in enumerate(tech_50_ranked_roa()):
-    print rank, i.name, i.symbol, i.financialdata.return_on_assets
-
+tech_50_ranked_pe_ratio()
+#tech_50_ranked_roa()
 #for obj in tech_50_ranked_pe_ratio():
 #    for a, b, c in obj:
 #        print a

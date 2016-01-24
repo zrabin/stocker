@@ -14,7 +14,7 @@ import data
 import Quandl
 
 QUAND_KEY = "1BCHxHp1ExoE4hXRmafE"
-BATCH = 50
+BATCH = 15
 LOGGER = logging.getLogger('import_financial_data')
 MONEY = { '': 10**3, 'M': 10**6, 'B': 10**9 }
 MONEY_RE = re.compile(r'^\$?(\-?\d+\.?\d*)([MB])?$')
@@ -140,10 +140,10 @@ def quandl(sleep_time):
             elif key == "total_assets":
                 LOGGER.info('%s --- %s: %s' % (company.symbol, key, value))                          
                 data.set_financial_data(
-                company=company, 
-                date=month,
-                total_assets=value,
-                )
+                    company=company, 
+                    date=month,
+                    total_assets=value,
+                    )
 
 
 def yahoo_finance_quotes(sleep_time):
@@ -229,6 +229,7 @@ def yahoo_finance_ks(sleep_time):
         if extra:
             LOGGER.info('Setting ks: %s: %s' % (company.symbol, extra))
             data.set_financial_data(company=company, date=month, **extra)
+            continue
         else:
             LOGGER.info('Skipping ks: %s' % company.symbol)
 
