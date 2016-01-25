@@ -226,8 +226,6 @@ def yahoo_finance_ks(sleep_time):
                 extra[md['key']] = value
 
         if extra:
-            
-            print "debug ------------- %s" % extra
             LOGGER.info('Setting ks: %s: %s' % (company.symbol, extra))
             data.set_financial_data(company=company, date=month, **extra)
         else:

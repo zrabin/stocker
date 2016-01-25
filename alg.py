@@ -11,10 +11,12 @@ def tech_50_ranked_pe_ratio():
                 .order_by(d.FinancialData.pe_ratio_ttm)
             )
     
+    score = {}
     for rank, company in enumerate(sql):
-        print rank, company.name, company.financialdata.pe_ratio_ttm
-
-
+        score.update({company.symbol : rank})
+    
+    return score
+        
 def tech_50_ranked_roa():
     sql = (d.Company
             .select(d.Company.name, d.Company.symbol, d.FinancialData.return_on_assets)
@@ -23,42 +25,23 @@ def tech_50_ranked_roa():
             .order_by(d.FinancialData.return_on_assets.desc())
             )
     
+    score = {}
     for rank, company in enumerate(sql):
-        print rank, company.name, company.financialdata.return_on_assets
+        score.update({company.symbol : rank})
+    
+    return score
 
+def magic_50():
+    pe = tech_50_ranked_pe_ratio()
+    roa = tech_50_ranked_roa()
+    
+    score = {}
+    for i in pe.keys()
+        for pe[i]:
+            if v is not None:
+                values = {"pe" : v}
+                score.update({k : values})
 
-tech_50_ranked_pe_ratio()
-#tech_50_ranked_roa()
-#for obj in tech_50_ranked_pe_ratio():
-#    for a, b, c in obj:
-#        print a
+    return score
 
-
-#def test():
-#    return (d.Company
-#            .select())
-#
-
-
-#query = (
-#'''SELECT company.symbol, company.name, financialdata.pe_ratio_ttm
-#FROM company inner join financialdata
-#ON company.id = financialdata.company_id 
-#WHERE financialdata.pe_ratio_ttm > 0
-#ORDER BY company.symbol
-#DESC;'''
-#)
-#
-#pe_ratio = database.db.execute_sql(query)
-#
-#for i in pe_ratio:
-#    print i 
-#
-#'''SELECT company.symbol, company.name, financialdata.pe_ratio_ttm 
-#FROM company inner join financialdata 
-#ON company.id = financialdata.company_id 
-#WHERE financialdata.pe_ratio_ttm > 0 
-#--ORDER BY financialdata.pe_ratio_ttm
-#ORDER BY company.symbol
-#DESC;'''
-#
+print magic_50()
