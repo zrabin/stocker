@@ -21,7 +21,7 @@ MONEY_RE = re.compile(r'^\$?(\-?\d+\.?\d*)([MB])?$')
 
 
 def get_time():
-    now = datetime.datetime.now().date()
+    now = datetime.datetime.now()
     return now
 
 def check_valid(value):
@@ -96,7 +96,7 @@ def decode_quandl(string):
     return value
 
 def quandl(sleep_time):
-    month = get_time()
+    timestamp = get_time()
 
     companies = list(data.get_tech_companies())
 
@@ -133,7 +133,7 @@ def quandl(sleep_time):
                 LOGGER.info('%s --- %s: %s' % (company.symbol, key, value))                          
                 data.set_financial_data(
                     company=company, 
-                    date=month,
+                    date=timestamp,
                     net_income=value,
                     )
         
@@ -141,13 +141,13 @@ def quandl(sleep_time):
                 LOGGER.info('%s --- %s: %s' % (company.symbol, key, value))                          
                 data.set_financial_data(
                     company=company, 
-                    date=month,
+                    date=timestamp,
                     total_assets=value,
                     )
 
 
 def yahoo_finance_quotes(sleep_time):
-    month = get_time()
+    timestamp = get_time()
 
     companies = list(data.get_tech_companies())
     companies = [companies[i:i+BATCH] for i in range(0, len(companies), BATCH)]
@@ -171,7 +171,7 @@ def yahoo_finance_quotes(sleep_time):
             company = batch[item['symbol']]
             data.set_financial_data(
                 company=company,
-                date=month,
+                date=timestamp,
                 ask=decode_money(item.get('Ask')),
                 market_cap=decode_money(item.get('MarketCapitalization')),
                 ebitda=decode_money(item.get('EBITDA')),
@@ -184,7 +184,7 @@ def yahoo_finance_quotes(sleep_time):
 
 
 def yahoo_finance_ks(sleep_time):
-    month = get_time()
+    timestamp = get_time()
     url = 'https://finance.yahoo.com/q/ks'
 
     companies = list(data.get_tech_companies())
@@ -227,7 +227,7 @@ def yahoo_finance_ks(sleep_time):
 
         if extra:
             LOGGER.info('Setting ks: %s: %s' % (company.symbol, extra))
-            data.set_financial_data(company=company, date=month, **extra)
+            data.set_financial_data(company=company, date=timestamp, **extra)
         else:
             LOGGER.info('Skipping ks: %s' % company.symbol)
 
