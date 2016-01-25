@@ -38,9 +38,11 @@ def magic_50():
     score = []
     for i in pe.keys():
         if i in roa:
-            print i 
             combined = pe[i] + roa[i]
             score.append({i : combined})
+    
+    #newlist = sorted(score, key=itemgetter('name'), reverse=True)
+
     return score
 
 print magic_50()
