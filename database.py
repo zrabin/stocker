@@ -12,6 +12,7 @@ db = db_url.connect(os.environ.get('DATABASE_URL', 'sqlite:///stocker.db'))
 class BaseModel(Model):
     class Meta:
         database = db
+        only_save_dirty = True
 
 
 class Company(BaseModel):

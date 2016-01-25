@@ -14,15 +14,15 @@ import data
 import Quandl
 
 QUAND_KEY = "1BCHxHp1ExoE4hXRmafE"
-BATCH = 15
+BATCH = 50
 LOGGER = logging.getLogger('import_financial_data')
 MONEY = { '': 10**3, 'M': 10**6, 'B': 10**9 }
 MONEY_RE = re.compile(r'^\$?(\-?\d+\.?\d*)([MB])?$')
 
 
-def get_month():
+def get_time():
     now = datetime.datetime.now().date()
-    return datetime.date(now.year, now.month, 1)
+    return now
 
 def check_valid(value):
     if value == 'N/A':
@@ -96,7 +96,7 @@ def decode_quandl(string):
     return value
 
 def quandl(sleep_time):
-    month = get_month()
+    month = get_time()
 
     companies = list(data.get_tech_companies())
 
@@ -147,7 +147,7 @@ def quandl(sleep_time):
 
 
 def yahoo_finance_quotes(sleep_time):
-    month = get_month()
+    month = get_time()
 
     companies = list(data.get_tech_companies())
     companies = [companies[i:i+BATCH] for i in range(0, len(companies), BATCH)]
@@ -184,7 +184,7 @@ def yahoo_finance_quotes(sleep_time):
 
 
 def yahoo_finance_ks(sleep_time):
-    month = get_month()
+    month = get_time()
     url = 'https://finance.yahoo.com/q/ks'
 
     companies = list(data.get_tech_companies())
@@ -211,7 +211,6 @@ def yahoo_finance_ks(sleep_time):
         for doc in soup.body.find_all('tr'):
             try:
                 md = map_data[doc.td.text]
-
                 if doc.td.text in map_data:
                     md['value'] = doc.contents[1].text.strip()
             except:
@@ -227,9 +226,10 @@ def yahoo_finance_ks(sleep_time):
                 extra[md['key']] = value
 
         if extra:
+            
+            print "debug ------------- %s" % extra
             LOGGER.info('Setting ks: %s: %s' % (company.symbol, extra))
             data.set_financial_data(company=company, date=month, **extra)
-            continue
         else:
             LOGGER.info('Skipping ks: %s' % company.symbol)
 
