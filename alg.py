@@ -34,14 +34,13 @@ def tech_50_ranked_roa():
 def magic_50():
     pe = tech_50_ranked_pe_ratio()
     roa = tech_50_ranked_roa()
-    
-    score = {}
-    for i in pe.keys()
-        for pe[i]:
-            if v is not None:
-                values = {"pe" : v}
-                score.update({k : values})
 
+    score = []
+    for i in pe.keys():
+        if i in roa:
+            print i 
+            combined = pe[i] + roa[i]
+            score.append({i : combined})
     return score
 
 print magic_50()
