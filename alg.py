@@ -2,6 +2,7 @@
 
 import os
 import database as d
+import operator 
 
 def tech_50_ranked_pe_ratio():
     sql = (d.Company
@@ -35,14 +36,14 @@ def magic_50():
     pe = tech_50_ranked_pe_ratio()
     roa = tech_50_ranked_roa()
 
-    score = []
+    score = {}
     for i in pe.keys():
         if i in roa:
             combined = pe[i] + roa[i]
-            score.append({i : combined})
-    
-    #newlist = sorted(score, key=itemgetter('name'), reverse=True)
+            score.update({i : combined})
+   
+    sorted_score = sorted(score.items(), key=operator.itemgetter(1))
 
-    return score
+    return sorted_score
 
 print magic_50()
