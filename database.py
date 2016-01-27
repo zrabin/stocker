@@ -42,6 +42,10 @@ class FinancialData(BaseModel):
     dividend_yeild = DecimalField(null=True)
     net_income = DecimalField(null=True)
     total_assets = DecimalField(null=True)
+    OneyrTargetPrice = DecimalField(null=True)
+    EPSEstimateCurrentYear = DecimalField(null=True)
+    EPSEstimateNextYear = DecimalField(null=True)
+    EPSEstimateNextQuarter = DecimalField(null=True)
 
     class Meta:
         indexes = (
