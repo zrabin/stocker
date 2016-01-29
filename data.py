@@ -1,4 +1,4 @@
-import database
+import database as d 
 
 
 def save_model(model, kwargs):
@@ -10,22 +10,31 @@ def save_model(model, kwargs):
     return model
 
 def set_company(symbol, **kwargs):
-    model, _ = database.Company.create_or_get(symbol=symbol, **kwargs)
+    model, _ = d.Company.create_or_get(symbol=symbol, **kwargs)
     return save_model(model, kwargs)
 
 def set_financial_data(company, date, **kwargs):
-    model, _ = database.FinancialData.create_or_get(company=company, date=date, **kwargs)
+    model, _ = d.FinancialData.create_or_get(company=company, date=date, **kwargs)
     return save_model(model, kwargs)
 
 def get_companies():
-    return database.Company.select().where(
-        ~(database.Company.symbol ** '%^%' | database.Company.symbol ** '%.%'
-        | database.Company.symbol ** 'WYY')
+    return d.Company.select().where(
+        ~(d.Company.symbol ** '%^%' | d.Company.symbol ** '%.%'
+        | d.Company.symbol ** 'WYY')
     )
 
 def get_tech_companies():
-    return database.Company.select().where(
-        ~(database.Company.symbol ** '%^%' | database.Company.symbol ** '%.%'
-        | database.Company.symbol ** 'WYY')
-        & (database.Company.sector == 'Technology')
+    return d.Company.select().where(
+        ~(d.Company.symbol ** '%^%' | d.Company.symbol ** '%.%'
+        | d.Company.symbol ** 'WYY')
+        & (d.Company.sector == 'Technology')
     )
+
+def get_magic_formula_companies():
+    return d.Company.select().where(                                            
+        ~(d.Company.symbol ** '%^%' | d.Company.symbol ** '%.%'                 
+        | d.Company.symbol ** 'WYY' | d.Company.sector == 'Finance' 
+        | d.Company.sector == 'Energy' | d.Company.sector == 'Miscellaneous' 
+        | d.Company.sector == '%Utilities%')
+    )
+

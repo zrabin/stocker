@@ -4,61 +4,85 @@ import os
 import database as d
 import operator 
 
-def tech_50_ranked_pe_ratio():
-    sql = (d.Company
+def tech_50_magic_form():
+    # Score company pe_ttm
+    tech_pe_ttm = (d.Company
                 .select(d.Company.name, d.Company.symbol, d.FinancialData.pe_ratio_ttm)
                 .join(d.FinancialData, on=(d.Company == d.FinancialData.company_id))
                 .where((d.Company.sector == 'Technology') & (d.FinancialData.pe_ratio_ttm != None))
                 .order_by(d.FinancialData.pe_ratio_ttm)
             )
     
-    score = {}
-    for rank, company in enumerate(sql):
-        score.update({company.symbol : rank})
+    pe_score = {}
+    for rank, company in enumerate(tech_pe_ttm):
+        pe_score.update({company.symbol : rank})
     
-    return score
-        
-def tech_50_ranked_eps_estimate_qtr():
-    sql = (d.Company
-                .select(d.Company.name, d.Company.symbol, d.FinancialData.eps_estimate_qtr)
-                .join(d.FinancialData, on=(d.Company == d.FinancialData.company_id))
-                .where((d.Company.sector == 'Technology') & (d.FinancialData.eps_estimate_qtr != None))
-                .order_by(d.FinancialData.pe_ratio_ttm)
-            )
     
-    score = {}
-    for rank, company in enumerate(sql):
-        score.update({company.symbol : rank})
-    
-    return score
-
-def tech_50_ranked_price():
-    sql = (d.Company
-                .select(d.Company.name, d.Company.symbol, d.FinancialData.ask)
-                .join(d.FinancialData, on=(d.Company == d.FinancialData.company_id))
-                .where((d.Company.sector == 'Technology') & (d.FinancialData.eps_estimate_qtr != None))
-                .order_by(d.FinancialData.ask)
-            )
-    
-    score = {}
-    for rank, company in enumerate(sql):
-        score.update({company.symbol : rank})
-    
-    return score
-
-def tech_50_ranked_roa():
-    sql = (d.Company
+    # Score company ROA
+    tech_roa = (d.Company
             .select(d.Company.name, d.Company.symbol, d.FinancialData.return_on_assets)
             .join(d.FinancialData, on=(d.FinancialData.company_id == d.Company))
             .where((d.Company.sector == 'Technology') & (d.FinancialData.return_on_assets != None))
             .order_by(d.FinancialData.return_on_assets.desc())
             )
     
-    score = {}
-    for rank, company in enumerate(sql):
-        score.update({company.symbol : rank})
+    roa_score = {}
+    for rank, company in enumerate(tech_roa):
+        roa_score.update({company.symbol : rank})
     
-    return score
+    
+    score = {}
+    for i in pe_score.keys():
+        if i in roa_score:
+            combined = pe_score[i] + roa_score[i]
+            score.update({i : combined})
+   
+    sorted_score = sorted(score.items(), key=operator.itemgetter(1))
+
+    return sorted_score
+        
+def magic_form():
+    # Score company pe_ttm
+    pe_ttm = (d.Company
+                .select(d.Company.name, d.Company.symbol, d.FinancialData.pe_ratio_ttm)
+                .join(d.FinancialData, on=(d.Company == d.FinancialData.company_id))
+                .where((d.Company.sector != 'Finance') & (d.Company.sector != 'Energy') 
+                & (d.Company.sector != 'Miscellaneous') & (d.Company.sector != '%Utilities%') 
+                & (d.FinancialData.pe_ratio_ttm != None))
+                .order_by(d.FinancialData.pe_ratio_ttm)
+            )
+    
+    pe_score = {}
+    for rank, company in enumerate(pe_ttm):
+        pe_score.update({company.symbol : rank})
+    
+    
+    # Score company ROA
+    roa = (d.Company
+            .select(d.Company.name, d.Company.symbol, d.FinancialData.return_on_assets)
+            .join(d.FinancialData, on=(d.FinancialData.company_id == d.Company))
+            .where((d.Company.sector != 'Finance') & (d.Company.sector != 'Energy') 
+            & (d.Company.sector != 'Miscellaneous') & (d.Company.sector != '%Utilities%')
+            & (d.FinancialData.return_on_assets != None)) 
+            .order_by(d.FinancialData.return_on_assets)
+        )
+    
+    roa_score = {}
+    for rank, company in enumerate(roa):
+        roa_score.update({company.symbol : rank})
+    
+    
+    score = {}
+    for i in pe_score.keys():
+        if i in roa_score:
+            combined = pe_score[i] + roa_score[i]
+            score.update({i : combined})
+   
+    sorted_score = sorted(score.items(), key=operator.itemgetter(1))
+
+    return sorted_score
+        
+
 
 def magic_50():
     pe = tech_50_ranked_pe_ratio()
@@ -99,4 +123,6 @@ def magic_50_future():
 
     return sorted_score
 
-print magic_50()
+companies = magic_form()
+for i in companies[:30]:
+    print i 
