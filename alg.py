@@ -4,6 +4,18 @@ import os
 import database as d
 import operator 
 
+def rank(**kwargs):
+    score = {}
+    for i in pe_score.keys():
+        if i in roa_score:
+            combined = pe_score[i] + roa_score[i]
+            score.update({i : combined})
+   
+    sorted_score = sorted(score.items(), key=operator.itemgetter(1))
+
+    return sorted_score
+    
+
 def tech_magic_formula():
     # Score company pe_ttm
     tech_pe_ttm = (d.Company
