@@ -1,5 +1,9 @@
 import alg
 
 companies = alg.magic_formula()
-for i in companies[:30]:
-    print i 
+companies2 = alg.magic_formula()
+
+
+test = alg.rank(companies, companies2)
+
+print len(test)

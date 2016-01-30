@@ -84,7 +84,7 @@ def decode_money(value):
     value = float(results.group(1))
     abbr = results.group(2) or ''
 
-    return int(value * MONEY[abbr])
+    return float(value * MONEY[abbr]) / 1000
 
 def decode_quandl(string):
     value_list = []
