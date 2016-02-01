@@ -3,10 +3,10 @@
 import argparse
 import bs4
 import datetime
+import time
 import logging
 import re
 import requests
-import time
 from bs4 import BeautifulSoup
 
 import common
@@ -14,14 +14,14 @@ import data
 import Quandl
 
 QUAND_KEY = "1BCHxHp1ExoE4hXRmafE"
-BATCH = 50
+BATCH = 100
 LOGGER = logging.getLogger('import_financial_data')
 MONEY = { '': 10**3, 'M': 10**6, 'B': 10**9 }
 MONEY_RE = re.compile(r'^\$?(\-?\d+\.?\d*)([MB])?$')
 
 
 def get_time():
-    now = datetime.datetime.now()
+    now = datetime.date.today()
     return now
 
 def check_valid(value):
@@ -96,9 +96,7 @@ def decode_quandl(string):
     return value
 
 def quandl(sleep_time):
-    timestamp = get_time()
-
-    companies = list(data.get_magic_formula_companies())
+    companies = list(data.get_companies())
 
     for i, company in enumerate(companies):
         if i > 0: time.sleep(sleep_time)
@@ -131,25 +129,26 @@ def quandl(sleep_time):
             
             if key == "net_income":
                 LOGGER.info('%s --- %s: %s' % (company.symbol, key, value))                          
+                timestamp = get_time()
                 data.set_financial_data(
                     company=company, 
-                    date=timestamp,
+             #       date=timestamp,
                     net_income=value,
                     )
         
             elif key == "total_assets":
                 LOGGER.info('%s --- %s: %s' % (company.symbol, key, value))                          
+                timestamp = get_time()
                 data.set_financial_data(
                     company=company, 
-                    date=timestamp,
+             #       date=timestamp,
                     total_assets=value,
                     )
 
 
 def yahoo_finance_quotes(sleep_time):
-    timestamp = get_time()
-
-    companies = list(data.get_magic_formula_companies())
+    
+    companies = list(data.get_companies())
     companies = [companies[i:i+BATCH] for i in range(0, len(companies), BATCH)]
 
     for i, batch in enumerate(companies):
@@ -169,9 +168,10 @@ def yahoo_finance_quotes(sleep_time):
 
         for item in body['query']['results']['quote']:
             company = batch[item['symbol']]
+            timestamp = get_time()
             data.set_financial_data(
                 company=company,
-                date=timestamp,
+            #    date=timestamp,
                 ask=decode_money(item.get('Ask')),
                 market_cap=decode_money(item.get('MarketCapitalization')),
                 ebitda=decode_money(item.get('EBITDA')),
@@ -188,10 +188,9 @@ def yahoo_finance_quotes(sleep_time):
 
 
 def yahoo_finance_ks(sleep_time):
-    timestamp = get_time()
     url = 'https://finance.yahoo.com/q/ks'
 
-    companies = list(data.get_magic_formula_companies())
+    companies = list(data.get_companies())
 
     for i, company in enumerate(companies):
         if i > 0: time.sleep(sleep_time)
@@ -230,8 +229,9 @@ def yahoo_finance_ks(sleep_time):
                 extra[md['key']] = value
 
         if extra:
+            timestamp = get_time()
             LOGGER.info('Setting ks: %s: %s' % (company.symbol, extra))
-            data.set_financial_data(company=company, date=timestamp, **extra)
+            data.set_financial_data(company=company, **extra)
         else:
             LOGGER.info('Skipping ks: %s' % company.symbol)
 

@@ -7,6 +7,7 @@ from playhouse import db_url
 
 
 db = db_url.connect(os.environ.get('DATABASE_URL', 'sqlite:///stocker.db'))
+#db = db_url.connect(os.environ.get('DATABASE_URL', 'postgresql://localhost:5432/stocker'))
 
 
 class BaseModel(Model):
@@ -24,33 +25,33 @@ class Company(BaseModel):
 
 class FinancialData(BaseModel):
     company = ForeignKeyField(Company)
-    date = DateField()
-    ask = DecimalField(null=True)
-    book_value = DecimalField(null=True)
-    market_cap = DecimalField(null=True)
-    ebitda = DecimalField(null=True)
-    pe_ratio_ttm = DecimalField(null=True)
-    eps_estimate_qtr = DecimalField(null=True)
-    peg_ratio = DecimalField(null=True)
-    one_yr_target_price = DecimalField(null=True)
-    dividend_yield = DecimalField(null=True)
-    return_on_assets = DecimalField(null=True)
-    return_on_equity = DecimalField(null=True)
-    change_year_low_per = DecimalField(null=True)
-    change_year_high_per = DecimalField(null=True)
-    one_yr_target_price = DecimalField(null=True)
-    dividend_yeild = DecimalField(null=True)
-    net_income = DecimalField(null=True)
-    total_assets = DecimalField(null=True)
-    OneyrTargetPrice = DecimalField(null=True)
-    EPSEstimateCurrentYear = DecimalField(null=True)
-    EPSEstimateNextYear = DecimalField(null=True)
-    EPSEstimateNextQuarter = DecimalField(null=True)
+#    date = DateTimeField()
+    ask = DoubleField(null=True)
+    book_value = DoubleField(null=True)
+    market_cap = DoubleField(null=True)
+    ebitda = DoubleField(null=True)
+    pe_ratio_ttm = DoubleField(null=True)
+    eps_estimate_qtr = DoubleField(null=True)
+    peg_ratio = DoubleField(null=True)
+    one_yr_target_price = DoubleField(null=True)
+    dividend_yield = DoubleField(null=True)
+    return_on_assets = DoubleField(null=True)
+    return_on_equity = DoubleField(null=True)
+    change_year_low_per = DoubleField(null=True)
+    change_year_high_per = DoubleField(null=True)
+    one_yr_target_price = DoubleField(null=True)
+    dividend_yeild = DoubleField(null=True)
+    net_income = DoubleField(null=True)
+    total_assets = DoubleField(null=True)
+    OneyrTargetPrice = DoubleField(null=True)
+    EPSEstimateCurrentYear = DoubleField(null=True)
+    EPSEstimateNextYear = DoubleField(null=True)
+    EPSEstimateNextQuarter = DoubleField(null=True)
 
-    class Meta:
-        indexes = (
-            (('company', 'date'), True),
-        )
+#    class Meta:
+#        indexes = (
+#            (('company', 'date'), True),
+#        )
 
 
 def main():

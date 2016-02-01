@@ -1,5 +1,8 @@
 beautifulsoup4
+pyasn1
 peewee
 requests
 quandl
 pandas
+psycopg2
+ndg-httpsclient
