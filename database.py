@@ -25,7 +25,7 @@ class Company(BaseModel):
 
 class FinancialData(BaseModel):
     company = ForeignKeyField(Company)
-#    date = DateTimeField()
+    date = DateTimeField(null=True)
     ask = DoubleField(null=True)
     book_value = DoubleField(null=True)
     market_cap = DoubleField(null=True)
@@ -48,10 +48,10 @@ class FinancialData(BaseModel):
     EPSEstimateNextYear = DoubleField(null=True)
     EPSEstimateNextQuarter = DoubleField(null=True)
 
-#    class Meta:
-#        indexes = (
-#            (('company', 'date'), True),
-#        )
+    class Meta:
+        indexes = (
+            (('company', 'date'), True),
+        )
 
 
 def main():

@@ -132,7 +132,7 @@ def quandl(sleep_time):
                 timestamp = get_time()
                 data.set_financial_data(
                     company=company, 
-             #       date=timestamp,
+                    date=timestamp,
                     net_income=value,
                     )
         
@@ -141,7 +141,7 @@ def quandl(sleep_time):
                 timestamp = get_time()
                 data.set_financial_data(
                     company=company, 
-             #       date=timestamp,
+                    date=timestamp,
                     total_assets=value,
                     )
 
@@ -171,7 +171,7 @@ def yahoo_finance_quotes(sleep_time):
             timestamp = get_time()
             data.set_financial_data(
                 company=company,
-            #    date=timestamp,
+                date=timestamp,
                 ask=decode_money(item.get('Ask')),
                 market_cap=decode_money(item.get('MarketCapitalization')),
                 ebitda=decode_money(item.get('EBITDA')),
@@ -231,7 +231,7 @@ def yahoo_finance_ks(sleep_time):
         if extra:
             timestamp = get_time()
             LOGGER.info('Setting ks: %s: %s' % (company.symbol, extra))
-            data.set_financial_data(company=company, **extra)
+            data.set_financial_data(company=company, date=timestamp **extra)
         else:
             LOGGER.info('Skipping ks: %s' % company.symbol)
 
