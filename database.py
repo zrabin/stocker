@@ -25,6 +25,7 @@ class Company(BaseModel):
 
 class FinancialData(BaseModel):
     company = ForeignKeyField(Company)
+    symbol = CharField(unique=True)
     date = DateTimeField(null=True)
     ask = DoubleField(null=True)
     book_value = DoubleField(null=True)
@@ -50,7 +51,7 @@ class FinancialData(BaseModel):
 
     class Meta:
         indexes = (
-            (('company', 'date'), True),
+            (('company', 'symbol'), True),
         )
 
 
