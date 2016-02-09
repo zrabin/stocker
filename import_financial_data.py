@@ -234,7 +234,7 @@ def yahoo_finance_ks(sleep_time):
         if extra:
             timestamp = get_time()
             LOGGER.info('Setting ks: %s: %s' % (company.symbol, extra))
-            data.set_financial_data(company=company, symbol=company.symbol, **extra)
+            data.set_financial_data(company=company, symbol=company.symbol, date=timestamp, **extra)
         else:
             LOGGER.info('Skipping ks: %s' % company.symbol)
 

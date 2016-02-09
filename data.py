@@ -13,8 +13,8 @@ def set_company(symbol, **kwargs):
     model, _ = d.Company.get_or_create(symbol=symbol, **kwargs)
     return save_model(model, kwargs)
 
-def set_financial_data(company, symbol, **kwargs):
-    model, _ = d.FinancialData.create_or_get(company=company, symbol=symbol, **kwargs)
+def set_financial_data(company, symbol, date, **kwargs):
+    model, _ = d.FinancialData.create_or_get(company=company, symbol=symbol, date=date, **kwargs)
     return save_model(model, kwargs)
 
 def get_companies():
