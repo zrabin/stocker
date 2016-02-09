@@ -20,7 +20,9 @@ def magic_formula():
         AND company.sector NOT LIKE '%Utilities%'
         ORDER BY company.symbol ASC'''
         )
-    financials = {}
+    
+    financials = []
+    
     for company in query:
         symbol = company.symbol
         name = company.name 
@@ -33,12 +35,17 @@ def magic_formula():
         values.append(pe_ttm)
         values.append(pe_ftm)
         values.append(roa)
-        financials.update({symbol : values})
+        financials.append(values)
 
     
-#    sorted_score = sorted(score.items(), key=operator.itemgetter(1))
+    score_pe_ttm = sorted(financials, key=operator.itemgetter(2))
+    score_pe_ftm = sorted(financials, key=operator.itemgetter(3))
+    score_pe_roa = sorted(financials, key=operator.itemgetter(4))
 
-    return financials
+    for i, x in enumerate(score_pe_ftm):
+        print "%s ------- %s\n" % (i, x[0])
+    
+    return score_pe_ttm
         
 ## Score company ROA
 #    roa = (d.Company
