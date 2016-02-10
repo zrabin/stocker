@@ -5,7 +5,6 @@ import os
 from peewee import *
 from playhouse import db_url
 
-
 db = db_url.connect(os.environ.get('DATABASE_URL', 'sqlite:///stocker.db'))
 #db = db_url.connect(os.environ.get('DATABASE_URL', 'postgresql://localhost:5432/stocker'))
 
@@ -48,6 +47,9 @@ class FinancialData(BaseModel):
     EPSEstimateCurrentYear = DoubleField(null=True)
     EPSEstimateNextYear = DoubleField(null=True)
     EPSEstimateNextQuarter = DoubleField(null=True)
+    rank_pe_ttm = DecimalField(null=True)
+    rank_pe_ftm = DecimalField(null=True)
+    rank_pe_roa = DecimalField(null=True)
 
     class Meta:
         indexes = (

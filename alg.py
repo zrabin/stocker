@@ -5,6 +5,12 @@ import os
 import database as d
 import operator 
 
+def set_rank(data):
+    rank_pe_ttm = sorted(data, key=operator.itemgetter(2))
+    rank_pe_ftm = sorted(data, key=operator.itemgetter(3))
+    rank_pe_roa = sorted(data, key=operator.itemgetter(4))
+
+
 def magic_formula():
     # Score company pe_ttm
     query = d.Company.raw(
@@ -37,22 +43,5 @@ def magic_formula():
         values.append(roa)
         financials.append(values)
 
-    
-    score_pe_ttm = sorted(financials, key=operator.itemgetter(2))
-    score_pe_ftm = sorted(financials, key=operator.itemgetter(3))
-    score_pe_roa = sorted(financials, key=operator.itemgetter(4))
+    return financials
 
-    for i, x in enumerate(score_pe_ftm):
-        print "%s ------- %s\n" % (i, x[0])
-    
-    return score_pe_ttm
-        
-## Score company ROA
-#    roa = (d.Company
-#            .select(d.Company.name, d.Company.symbol, d.FinancialData.return_on_assets)
-#            .join(d.FinancialData, on=(d.FinancialData.company_id == d.Company))
-#            .where((d.Company.sector != 'Finance') & (d.Company.sector != 'Energy') 
-#            & (d.Company.sector != 'Miscellaneous') & (d.Company.sector != '%Utilities%')
-#            & (d.FinancialData.return_on_assets != None)) 
-#            .order_by(d.FinancialData.return_on_assets)
-#        )
