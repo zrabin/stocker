@@ -5,11 +5,6 @@ import os
 import database as d
 import operator 
 
-def set_rank(data):
-    rank_pe_ttm = sorted(data, key=operator.itemgetter(2))
-    rank_pe_ftm = sorted(data, key=operator.itemgetter(3))
-    rank_pe_roa = sorted(data, key=operator.itemgetter(4))
-
 
 def magic_formula():
     # Score company pe_ttm
