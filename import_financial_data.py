@@ -8,6 +8,7 @@ import logging
 import re
 import requests
 from bs4 import BeautifulSoup
+import threading
 
 import common
 import data
@@ -23,6 +24,11 @@ MONEY_RE = re.compile(r'^\$?(\-?\d+\.?\d*)([MB])?$')
 def get_time():
     now = datetime.date.today()
     return now
+
+def chunks(list, n):
+    for i in xrange(0, len(list), n):
+        yield list[i:i+n]
+
 
 def check_valid(value):
     if value == 'N/A':
@@ -188,16 +194,13 @@ def yahoo_finance_quotes(sleep_time):
             )
 
 
-def yahoo_finance_ks(sleep_time):
+def yahoo_finance_scrape(companies):
+    
     url = 'https://finance.yahoo.com/q/ks'
-
-    companies = list(data.get_companies())
-
-    for i, company in enumerate(companies):
-        if i > 0: time.sleep(sleep_time)
-
+    
+    for company in companies:
         LOGGER.info('Getting ks: %s' % company.symbol)
-
+        
         map_data = {
             'Return on Assets (ttm):': {
                 'key': 'return_on_assets',
@@ -208,10 +211,10 @@ def yahoo_finance_ks(sleep_time):
                 'decode': decode_percent,
             },
         }
-
+        
         response = requests.get(url, params={'s': company.symbol})
         soup = BeautifulSoup(response.text, 'html.parser')
-
+        
         for doc in soup.body.find_all('tr'):
             try:
                 md = map_data[doc.td.text]
@@ -219,22 +222,34 @@ def yahoo_finance_ks(sleep_time):
                     md['value'] = doc.contents[1].text.strip()
             except:
                 continue
-
+        
         extra = {}
-
+        
         for md in map_data.values():
             if 'value' not in md:
                 continue
             value = md['decode'](md['value'])
             if value is not None:
                 extra[md['key']] = value
-
+        
         if extra:
             timestamp = get_time()
             LOGGER.info('Setting ks: %s: %s' % (company.symbol, extra))
             data.set_financial_data(company=company, symbol=company.symbol, date=timestamp, **extra)
         else:
             LOGGER.info('Skipping ks: %s' % company.symbol)
+
+def yahoo_finance_ks(sleep_time):
+    companies = list(data.get_companies())
+
+    companies = chunks(companies, BATCH)
+    
+    work = []
+    
+    for c in companies:
+        t = threading.Thread(target=yahoo_finance_scrape(c))
+        work.append(t)
+        t.start()
 
 
 def main():
