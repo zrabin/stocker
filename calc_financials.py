@@ -64,7 +64,6 @@ def rank_financials():
         "pe_ratio_ftm",
         "eps_estimate_qtr",
         "peg_ratio",
-        "one_yr_target_price",
         "return_on_assets",
         "return_on_equity",
         "change_year_low_per",
@@ -72,7 +71,7 @@ def rank_financials():
         "net_income",
         "total_assets",
         "OneyrTargetPrice",
-        "DividendYield"
+        "DividendYield",
         "EPSEstimateCurrentYear",
         "EPSEstimateNextYear",
         "EPSEstimateNextQuarter",
