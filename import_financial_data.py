@@ -180,13 +180,11 @@ def yahoo_finance_quotes(sleep_time):
                 ebitda=decode_money(item.get('EBITDA')),
                 pe_ratio_ttm=decode_float(item.get('PERatio')),
                 peg_ratio=decode_float(item.get('PEGRatio')),
-                eps_estimate_qtr=decode_float(item.get('EPSEstimateNextQuarter')),
-                one_yr_target_price=decode_float(item.get('OneyrTargetPrice')),
-                dividend_yield=decode_float(item.get('DividendYield')),
+                DividendYield = decode_float(item.get('DividendYield')),
                 OneyrTargetPrice = decode_float(item.get('OneyrTargetPrice')),
                 EPSEstimateCurrentYear = decode_float(item.get('EPSEstimateCurrentYear')),
                 EPSEstimateNextYear = decode_float(item.get('EPSEstimateNextYear')),
-                EPSEstimateNextQuarter = decode_float(item.get('EPSEstimateNextYear')),
+                EPSEstimateNextQuarter = decode_float(item.get('EPSEstimateNextQuarter')),
             )
 
 

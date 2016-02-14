@@ -1,5 +1,5 @@
 import database as d 
-
+import operator
 
 def save_model(model, kwargs):
     for key, value in kwargs.items():
@@ -30,7 +30,8 @@ def get_tech_companies():
         & (d.Company.sector == 'Technology')
     )
 
-def set_rank(data):
-    rank_pe_ttm = sorted(data, key=operator.itemgetter(2))
-    rank_pe_ftm = sorted(data, key=operator.itemgetter(3))
-    rank_pe_roa = sorted(data, key=operator.itemgetter(4))
+def set_rank(symbol, date, field, rank):
+    kwargs = {field : rank}
+    model, _ = d.FinancialData.create_or_get(symbol=symbol, date=date, **kwargs)
+    return save_model(model, kwargs)
+

@@ -26,13 +26,11 @@ def magic_formula():
     
     for company in query:
         symbol = company.symbol
-        name = company.name 
         pe_ttm = company.pe_ratio_ttm
         pe_ftm = company.future_pe
         roa = company.return_on_assets
         values = []
         values.append(symbol)
-        values.append(name)
         values.append(pe_ttm)
         values.append(pe_ftm)
         values.append(roa)
