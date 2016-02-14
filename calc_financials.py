@@ -55,34 +55,41 @@ def calc_pe_ratio_ftm():
 
 
 def rank_financials():
-    attributes = [
-        "ask",
-        "book_value",
-        "market_cap",
-        "ebitda",
-        "pe_ratio_ttm",
-        "pe_ratio_ftm",
-        "eps_estimate_qtr",
-        "peg_ratio",
-        "return_on_assets",
-        "return_on_equity",
-        "change_year_low_per",
-        "change_year_high_per",
-        "net_income",
-        "total_assets",
-        "OneyrTargetPrice",
-        "DividendYield",
-        "EPSEstimateCurrentYear",
-        "EPSEstimateNextYear",
-        "EPSEstimateNextQuarter",
-    ]
+    attributes = {
+#        "ask" : "desc",
+#        "book_value" : "desc",
+#        "market_cap" : "desc",
+#        "ebitda" : "desc",
+        "pe_ratio_ttm" : "asc",
+        "pe_ratio_ftm" : "asc",
+        "eps_estimate_qtr" : "desc",
+        "peg_ratio" : "asc",
+        "return_on_assets" : "desc",
+        "return_on_equity" : "desc",
+#        "change_year_low_per" : "desc",
+#        "change_year_high_per" : "desc",
+#        "net_income" : "desc",
+#        "total_assets" : "desc",
+#        "OneyrTargetPrice" : "desc",
+        "DividendYield" : "desc",
+#        "EPSEstimateCurrentYear" : "desc",
+#        "EPSEstimateNextYear" : "desc",
+#        "EPSEstimateNextQuarter" : "desc"
+    }
 
-    for f in attributes:
-        query = d.FinancialData.select(
-            d.FinancialData.symbol,
-            getattr(d.FinancialData, f)).where(
-            getattr(d.FinancialData, f).is_null(False)).order_by(
-            getattr(d.FinancialData, f))
+    for f in attributes.keys():
+        if attributes[f] == "asc":
+            query = d.FinancialData.select(
+                d.FinancialData.symbol,
+                getattr(d.FinancialData, f)).where(
+                getattr(d.FinancialData, f).is_null(False)).order_by(
+                getattr(d.FinancialData, f))
+        elif attributes[f] == "desc":
+            query = d.FinancialData.select(
+                d.FinancialData.symbol,
+                getattr(d.FinancialData, f)).where(
+                getattr(d.FinancialData, f).is_null(False)).order_by(
+                getattr(d.FinancialData, f).desc())
         
         #    getattr(d.FinancialData, f)
         financial_data = []
@@ -104,7 +111,7 @@ def rank_financials():
     
 def main():
 
-    calc_pe_ratio_ftm()
+#    calc_pe_ratio_ftm()
     
     rank_financials()
 
