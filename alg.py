@@ -9,9 +9,9 @@ import operator
 def magic_formula():
     # Score company pe_ttm
     query = d.Company.raw(
-        '''SELECT company.symbol, financialdata.rank_pe_ratio_ttm, financialdata.rank_return_on_assets,
-        financialdata.rank_pe_ratio_ftm, financialdata.rank_pe_ratio_ftm + financialdata.rank_return_on_assets
-        AS magic_form_score
+        '''SELECT company.symbol, 
+        financialdata.rank_pe_ratio_ttm + financialdata.rank_return_on_assets AS magic_form_score_ttm,
+        financialdata.rank_pe_ratio_ftm + financialdata.rank_return_on_assets AS magic_form_score_ftm
         FROM company 
         INNER JOIN financialdata on company.id = financialdata.company_id
         WHERE financialdata.rank_pe_ratio_ttm IS NOT Null 
@@ -28,16 +28,12 @@ def magic_formula():
     
     for company in query:
         symbol = company.symbol
-        pe_ttm = company.pe_ratio_ttm
-        pe_ftm = company.pe_ratio_ftm
-        roa = company.return_on_assets
-        mf_score = company.magic_form_score
+        mf_score_ttm = company.magic_form_score_ttm
+        mf_score_ftm = company.magic_form_score_ftm
         values = []
         values.append(symbol)
-        values.append(pe_ttm)
-        values.append(pe_ftm)
-        values.append(roa)
-        values.append(mf_score)
+        values.append(mf_score_ttm)
+        values.append(mf_score_ftm)
         financials.append(values)
 
     return financials
