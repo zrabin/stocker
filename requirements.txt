@@ -6,3 +6,4 @@ quandl
 pandas
 psycopg2
 ndg-httpsclient
+tabulate

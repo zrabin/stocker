@@ -1,9 +1,13 @@
-import operator 
-import alg
+from tabulate import tabulate
+import operator
+from alg import Alg
 
-mf = alg.magic_formula()
+rankings = Alg()
 
-rank_future = sorted(mf, key=operator.itemgetter(1))
+data = rankings.getRankings(strategy="magic_formula_ttm")
 
-for rank, data in enumerate(rank_future):
-    print rank, data
+print tabulate(data, headers="keys")
+
+#for rank, data in enumerate(rank_future):
+#    url = "https://www.google.com/finance?q="
+#    print rank, tabulate(data), url + str(data["symbol"]) 
