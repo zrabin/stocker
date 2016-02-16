@@ -75,14 +75,14 @@ class Alg(object):
 
     def getCompany(self, company):
         
-        financials = [] 
         strategies = Alg.strategies
+            
+        values = {}
+        values.update({"symbol" : company})
 
-        for i in strategies:
+        for strategy in strategies:
             alg = Alg()
-            rank = alg.getRankings(i)
-
-
+            rank = alg.getRankings(strategy)
             
             for x in rank:
                 
@@ -90,12 +90,13 @@ class Alg(object):
                     continue
                 
                 elif x["symbol"] == company:
-                    financials.append(x)
+                    score = {strategy : x["rank"]}
+                    values.update(score)
 
                 else:
                     return "could not find that ticker"
  
-        return financials
+        return values
 
                         
                         
