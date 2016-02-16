@@ -2,12 +2,12 @@ from tabulate import tabulate
 import operator
 from alg import Alg
 
-rankings = Alg()
 
-data = rankings.getRankings(strategy="magic_formula_ttm")
+#data = rankings.getRankings(strategy="magic_formula_ttm")
 
-print tabulate(data, headers="keys")
+data1 = Alg().getRankings('magic_formula_ttm')
+data2 = Alg().getCompany('AAPL')
 
-#for rank, data in enumerate(rank_future):
-#    url = "https://www.google.com/finance?q="
-#    print rank, tabulate(data), url + str(data["symbol"]) 
+print tabulate(data1, headers="keys")
+print tabulate(data2, headers="keys")
+

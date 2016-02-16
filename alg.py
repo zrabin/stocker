@@ -6,9 +6,14 @@ import database as d
 import operator 
 
 class Alg(object):
+        
+    strategies =[ 
+        "magic_formula_ttm",
+        "magic_formula_ftm",
+    ]
     
-    def __init__(self, company=''):
-        self.company = company
+    def __init__(self):
+        return
 
     def getRankings(self, strategy):
         
@@ -67,4 +72,37 @@ class Alg(object):
         financials = sorted(financials, key=operator.itemgetter("rank"))
 
         return financials
+
+    def getCompany(self, company):
+        
+        financials = [] 
+        strategies = Alg.strategies
+
+        for i in strategies:
+            alg = Alg()
+            rank = alg.getRankings(i)
+
+
+            
+            for x in rank:
+                
+                if x["symbol"] != company:
+                    continue
+                
+                elif x["symbol"] == company:
+                    financials.append(x)
+
+                else:
+                    return "could not find that ticker"
+ 
+        return financials
+
+                        
+                        
+
+
+
+
+
+            
 
