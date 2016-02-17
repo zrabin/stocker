@@ -243,10 +243,12 @@ def yahoo_finance_ks(sleep_time):
     companies = list(data.get_companies())
 
     companies = chunks(companies, BATCH)
-    
+
     work = []
     
     for c in companies:
+        print c 
+        continue
         t = threading.Thread(target=yahoo_finance_scrape(c))
         work.append(t)
         t.start()
