@@ -169,7 +169,7 @@ def yahoo_finance_quotes(sleep_time):
             'format': 'json',
             'env': 'http://datatables.org/alltables.env',
         }
-        response = requests.get(url, params=params)
+        response = requests.get(url, params=params, verify=False)
         body = response.json()
 
         LOGGER.info('Getting quotes: %s' % ', '.join(batch.keys()))
@@ -212,7 +212,7 @@ def yahoo_finance_scrape(companies):
             },
         }
         
-        response = requests.get(url, params={'s': company.symbol})
+        response = requests.get(url, params={'s': company.symbol}, verify=False)
         soup = BeautifulSoup(response.text, 'html.parser')
         
         for doc in soup.body.find_all('tr'):
@@ -247,11 +247,10 @@ def yahoo_finance_ks(sleep_time):
     work = []
     
     for c in companies:
-        print c 
-        continue
         t = threading.Thread(target=yahoo_finance_scrape(c))
         work.append(t)
-        t.start()
+    
+    t.start()
 
 
 def main():
