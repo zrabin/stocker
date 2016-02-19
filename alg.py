@@ -86,9 +86,9 @@ class Alg(object):
         strategies = Alg.strategies
             
         data = []    
-        values = {}
         
         for company in companies:
+            values = {}
             values.update({"symbol" : company})
 
             for strategy in strategies:
