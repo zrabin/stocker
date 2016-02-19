@@ -12,7 +12,6 @@ class Alg(object):
             arg = [arg]
         return arg
 
-
     strategies =[ 
         "magic_formula_ttm",
         "magic_formula_ftm",
@@ -82,9 +81,7 @@ class Alg(object):
     def getCompany(self, arg):
         
         companies = Alg().toList(arg)
-
         strategies = Alg.strategies
-            
         data = []    
         
         for company in companies:
@@ -109,13 +106,4 @@ class Alg(object):
                     data.append(values)
  
         return data
-
-                        
-                        
-
-
-
-
-
-            
 
