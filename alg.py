@@ -6,7 +6,12 @@ import database as d
 import operator 
 
 class Alg(object):
-        
+    
+    def toList(self, arg):
+        if not isinstance(arg, (list, tuple)):
+            arg = [arg]
+        return arg
+
     strategies =[ 
         "magic_formula_ttm",
         "magic_formula_ftm",
@@ -73,37 +78,32 @@ class Alg(object):
 
         return financials
 
-    def getCompany(self, company):
+    def getCompany(self, arg):
         
+        companies = Alg().toList(arg)
         strategies = Alg.strategies
-            
-        values = {}
-        values.update({"symbol" : company})
+        data = []    
+        
+        for company in companies:
+            values = {}
+            values.update({"symbol" : company})
 
-        for strategy in strategies:
-            alg = Alg()
-            rank = alg.getRankings(strategy)
-            
-            for x in rank:
+            for strategy in strategies:
+                rank = Alg().getRankings(strategy)
                 
-                if x["symbol"] != company:
-                    continue
-                
-                elif x["symbol"] == company:
-                    score = {strategy : x["rank"]}
-                    values.update(score)
+                for x in rank:
+                    
+                    if x["symbol"] != company:
+                        continue
+                    
+                    elif x["symbol"] == company:
+                        score = {strategy : x["rank"]}
+                        values.update(score)
 
-                else:
-                    return "could not find that ticker"
+                    else:
+                        values.update({"error" : "could not find that ticker"})
+                    
+                    data.append(values)
  
-        return values
-
-                        
-                        
-
-
-
-
-
-            
+        return data
 
