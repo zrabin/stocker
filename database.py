@@ -40,6 +40,7 @@ class FinancialData(BaseModel):
     change_year_high_per = DoubleField(null=True)
     net_income = DoubleField(null=True)
     total_assets = DoubleField(null=True)
+    shares_outstanding = DoubleField(null=True)
     OneyrTargetPrice = DoubleField(null=True)
     DividendYield = DoubleField(null=True)
     EPSEstimateCurrentYear = DoubleField(null=True)

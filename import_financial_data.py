@@ -101,58 +101,43 @@ def decode_quandl(string):
     value = (value_list[-1])
     return value
 
-def quandl(sleep_time):
-    companies = list(data.get_companies())
+def get_quandl(companies):
 
     for i, company in enumerate(companies):
-        if i > 0: time.sleep(sleep_time)
         
-        financials = []
-        
-        code_net_income = "RAYMOND/" + company.symbol + "_NET_INCOME_Q"
-        code_total_assets = "RAYMOND/" + company.symbol + "_TOTAL_ASSETS_Q"
+        q_codes ={
+            "net_income" : "NET_INCOME_Q",
+            "total_assets" : "TOTAL_ASSETS_Q",
+            "shares_outstanding" : "TOTAL_COMMON_SHARES_OUTSTANDING_Q"
+            }
+
+        financials = {}
         
         LOGGER.info('Getting quandl income & assets for: %s' % company.symbol)                          
+        
+        for k, v in q_codes.iteritems():
+            code = "RAYMOND/" + company.symbol + "_" + v
 
-        try:
-            net_income = Quandl.get(code_net_income, rows="1", authtoken=QUAND_KEY)
-            net_income = decode_quandl(net_income)
-            financials.append(["net_income", net_income])
-        except:
-            net_income = "N/A"
-            financials.append(["net_income", net_income])
-        
-        try:
-            total_assets = Quandl.get(code_total_assets, rows="1", authtoken=QUAND_KEY)
-            total_assets = decode_quandl(total_assets)
-            financials.append(["total_assets", total_assets])
-        except:
-            total_assets = "N/A"
-            financials.append(["total_assets", total_assets])
-        
-        for key, value in financials:
-            value = decode_float(value)
+            try:
+                stat = Quandl.get(code, rows="1", authtoken=QUAND_KEY)
+                stat = decode_quandl(stat)
+                stat = decode_float(stat)
+                financials.update({k : stat})
+                    
+            except:
+                stat = "N/A"
+                stat = decode_float(stat)
+                financials.update({k : stat})
             
-            if key == "net_income":
-                LOGGER.info('%s --- %s: %s' % (company.symbol, key, value))                          
-                timestamp = get_time()
-                data.set_financial_data(
-                    company=company, 
-                    symbol=company.symbol,
-                    date=timestamp,
-                    net_income=value,
-                    )
+        LOGGER.info('%s --- %s:' % (company.symbol, financials))                          
+        timestamp = get_time()
+        data.set_financial_data(
+            company=company, 
+            symbol=company.symbol,
+            date=timestamp,
+            **financials
+            )
         
-            elif key == "total_assets":
-                LOGGER.info('%s --- %s: %s' % (company.symbol, key, value))                          
-                timestamp = get_time()
-                data.set_financial_data(
-                    company=company, 
-                    symbol=company.symbol,
-                    date=timestamp,
-                    total_assets=value,
-                    )
-
 
 def yahoo_finance_quotes(sleep_time):
     
@@ -169,7 +154,7 @@ def yahoo_finance_quotes(sleep_time):
             'format': 'json',
             'env': 'http://datatables.org/alltables.env',
         }
-        response = requests.get(url, params=params, verify=False)
+        response = requests.get(url, params=params)
         body = response.json()
 
         LOGGER.info('Getting quotes: %s' % ', '.join(batch.keys()))
@@ -194,7 +179,7 @@ def yahoo_finance_quotes(sleep_time):
             )
 
 
-def yahoo_finance_scrape(companies):
+def get_yahoo_finance_ks(companies):
     
     url = 'https://finance.yahoo.com/q/ks'
     
@@ -212,7 +197,7 @@ def yahoo_finance_scrape(companies):
             },
         }
         
-        response = requests.get(url, params={'s': company.symbol}, verify=False)
+        response = requests.get(url, params={'s': company.symbol})
         soup = BeautifulSoup(response.text, 'html.parser')
         
         for doc in soup.body.find_all('tr'):
@@ -239,6 +224,19 @@ def yahoo_finance_scrape(companies):
         else:
             LOGGER.info('Skipping ks: %s' % company.symbol)
 
+def quandl(sleep_time):
+    companies = list(data.get_companies())
+
+    companies = chunks(companies, BATCH)
+
+    work = []
+    
+    for c in companies:
+        t = threading.Thread(target=get_quandl(c))
+        work.append(t)
+    
+    t.start()
+
 def yahoo_finance_ks(sleep_time):
     companies = list(data.get_companies())
 
@@ -247,7 +245,7 @@ def yahoo_finance_ks(sleep_time):
     work = []
     
     for c in companies:
-        t = threading.Thread(target=yahoo_finance_scrape(c))
+        t = threading.Thread(target=get_yahoo_finance_ks(c))
         work.append(t)
     
     t.start()
