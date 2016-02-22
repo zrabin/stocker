@@ -7,13 +7,13 @@ import operator
 import data
     
     
-def getRank(db_obj, strategy):
+def getRank(model, strategy):
 
     financials = []
     strategy = strategy
 
     rank = 0 
-    for company in db_obj:
+    for company in model:
         rank = rank + 1
         symbol = company.symbol
         score = company.score
@@ -63,7 +63,6 @@ class Alg(object):
             ORDER BY score ASC'''
             )
 
-        
         rankings = getRank(query, strategy)
 
         return rankings
@@ -116,7 +115,6 @@ class Alg(object):
     def getRankings(self, strategy):
         
         alg = Alg()
-        
         strategies = self.strategies
 
         if strategy == "magic_formula_ttm":
@@ -127,17 +125,37 @@ class Alg(object):
         
         elif strategy == "magic_formula_ftm":
             return alg.getMagicFormulaFuture()
+        
+        elif strategy == "all":
+            strat_map = {
+            "magic_formula_future" : alg.getMagicFormulaFuture(),
+            "magic_formula_trailing" : alg.getMagicFormulaTrailing(),
+            "garp" : alg.getGARP()
+            }
+            
+            symbols = set()
+            
+            for s in strat_map.keys():
+                ranks = strat_map[s]
+                for r in ranks:
+                    symbol = r['symbol']
+                    symbols.add(symbol)
+            
+            symbols = list(symbols)
+
+            return symbols
+
 
         else:
             return "That's not a valid strategy %s" % strategies
 
 
-    def getCompany(self, arg):
+    def getCompany(self, company):
         
-        companies = Alg().toList(arg)
+        companies = Alg().toList(company)
         strategies = self.strategies
-        data = []    
         
+        data = []
         for company in companies:
             values = {}
             values.update({"symbol" : company})
@@ -146,7 +164,6 @@ class Alg(object):
                 rank = Alg().getRankings(strategy)
                 
                 for x in rank:
-                    
                     if x["symbol"] != company:
                         continue
                     

@@ -3,8 +3,7 @@ from playhouse.migrate import *
 my_db = SqliteDatabase('stocker.db')
 migrator = SqliteMigrator(my_db)
 
-garp_ratio = DoubleField(null=True)
-rank_garp_ratio = DecimalField(null=True)
+shares_outstanding = DoubleField(null=True)
 #rank_ask = DecimalField(null=True)
 #rank_book_value = DecimalField(null=True)
 #rank_market_cap = DecimalField(null=True)
@@ -49,8 +48,7 @@ migrate(
 #migrator.drop_column('financialdata', 'rank_EPSEstimateNextYear'),
 #migrator.drop_column('financialdata', 'rank_EPSEstimateNextQuarter'),
 #migrator.add_column('financialdata', 'rank_ask', rank_ask),
-migrator.add_column('financialdata', 'garp_ratio', garp_ratio),
-migrator.add_column('financialdata', 'rank_garp_ratio', rank_garp_ratio),
+migrator.add_column('financialdata', 'shares_outstanding', shares_outstanding),
 #migrator.add_column('financialdata', 'rank_book_value', rank_book_value),
 #migrator.add_column('financialdata', 'rank_market_cap', rank_market_cap),
 #migrator.add_column('financialdata', 'rank_ebitda', rank_ebitda),

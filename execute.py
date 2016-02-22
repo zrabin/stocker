@@ -4,7 +4,7 @@ from alg import Alg
 import data
 
 
-#data = rankings.getRankings(strategy="magic_formula_ttm")
+data4 = Alg().getRankings(strategy="all")
 
 
 companies = list(data.get_companies())                                      
@@ -18,6 +18,8 @@ data3 = Alg().getGARP()
 #data2 = Alg().getCompany(['AAPL', 'SSTK', 'CRM', 'DATA', 'GRMN'])
 #data3 = Alg().getCompany(companies)
 
-print tabulate(data1, headers="keys")
-print tabulate(data2, headers="keys")
-print tabulate(data3, headers="keys")
+print data4
+#print tabulate(data4, headers="keys")
+#print tabulate(data1, headers="keys")
+#print tabulate(data2, headers="keys")
+#print tabulate(data3, headers="keys")
