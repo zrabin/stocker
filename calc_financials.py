@@ -53,6 +53,42 @@ def calc_pe_ratio_ftm():
     return financials
 
 
+def calc_garp_ratio():
+    query = d.Company.raw(
+        '''SELECT company.symbol, 
+        financialdata.pe_ratio_ttm / financialdata.peg_ratio as garp_ratio  
+        FROM company 
+        INNER JOIN financialdata on company.id = financialdata.company_id
+        WHERE financialdata.pe_ratio_ttm IS NOT Null 
+        AND financialdata.peg_ratio IS NOT Null
+        ORDER BY company.symbol ASC'''
+        )
+    
+    financials = []
+    
+    for row in query:
+        symbol = row.symbol
+        garp_ratio = row.garp_ratio
+        values = {}
+        values.update({
+            "company" : row.id, 
+            "symbol" : symbol,
+            "garp_ratio" : garp_ratio
+        })
+        financials.append(values)
+   
+    for x in financials:
+        print "setting %s --- garp_ratio = %s" % (x['symbol'], x['garp_ratio'])
+        data.set_financial_data(
+            company=x["company"],
+            symbol=x["symbol"],
+            date=get_time(),
+            garp_ratio=x["garp_ratio"]
+        )
+
+    return financials
+
+
 
 def rank_financials():
     attributes = {
@@ -64,6 +100,7 @@ def rank_financials():
         "pe_ratio_ftm" : "asc",
         "eps_estimate_qtr" : "desc",
         "peg_ratio" : "asc",
+        "garp_ratio" : "asc",
         "return_on_assets" : "desc",
         "return_on_equity" : "desc",
         "change_year_low_per" : "desc",
@@ -111,7 +148,10 @@ def rank_financials():
     
 def main():
 
-#    calc_pe_ratio_ftm()
+ 
+    calc_pe_ratio_ftm()
+    
+    calc_garp_ratio()
     
     rank_financials()
 
