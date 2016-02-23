@@ -3,7 +3,10 @@ from playhouse.migrate import *
 my_db = SqliteDatabase('stocker.db')
 migrator = SqliteMigrator(my_db)
 
-shares_outstanding = DoubleField(null=True)
+magic_formula_trailing = DoubleField(null=True)
+magic_formula_future = DoubleField(null=True)
+rank_magic_formula_trailing = DoubleField(null=True)
+rank_magic_formula_future = DoubleField(null=True)
 #rank_ask = DecimalField(null=True)
 #rank_book_value = DecimalField(null=True)
 #rank_market_cap = DecimalField(null=True)
@@ -48,7 +51,10 @@ migrate(
 #migrator.drop_column('financialdata', 'rank_EPSEstimateNextYear'),
 #migrator.drop_column('financialdata', 'rank_EPSEstimateNextQuarter'),
 #migrator.add_column('financialdata', 'rank_ask', rank_ask),
-migrator.add_column('financialdata', 'shares_outstanding', shares_outstanding),
+migrator.add_column('financialdata', 'magic_formula_trailing', magic_formula_trailing),
+migrator.add_column('financialdata', 'magic_formula_future', magic_formula_future),
+migrator.add_column('financialdata', 'rank_magic_formula_trailing', rank_magic_formula_trailing),
+migrator.add_column('financialdata', 'rank_magic_formula_future', rank_magic_formula_future),
 #migrator.add_column('financialdata', 'rank_book_value', rank_book_value),
 #migrator.add_column('financialdata', 'rank_market_cap', rank_market_cap),
 #migrator.add_column('financialdata', 'rank_ebitda', rank_ebitda),

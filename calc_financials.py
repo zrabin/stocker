@@ -86,11 +86,66 @@ def calc_garp_ratio():
             garp_ratio=x["garp_ratio"]
         )
 
-    return financials
+
+def calc_magic_formula_trailing():
+    
+    strategy = "magic_formula_ttm"
+    
+    query = d.Company.raw(
+        '''SELECT company.symbol, 
+        financialdata.rank_pe_ratio_ttm + financialdata.rank_return_on_assets AS score
+        FROM company 
+        INNER JOIN financialdata on company.id = financialdata.company_id
+        WHERE financialdata.rank_pe_ratio_ttm IS NOT Null 
+        AND financialdata.rank_return_on_assets IS NOT Null
+        AND company.sector IS NOT 'Finance' 
+        AND company.sector IS NOT 'Energy'
+        AND company.sector IS NOT 'Miscellaneous'
+        AND company.sector NOT LIKE '%Utilities%'
+        ORDER BY score ASC'''
+        )
+
+    rankings = alg.getRank(query, strategy)
+    for x in rankings:
+        print "setting %s --- %s = %s" % (x['symbol'], strategy, x[strategy])
+        data.set_financial_data(
+            company = x["company"],
+            symbol = x["symbol"],
+            date=get_time(),
+            magic_formula_trailing = x[strategy]
+        )
 
 
+def calc_magic_formula_future():
+    
+    strategy = "magic_formula_ftm"
+    
+    query = d.Company.raw(
+        '''SELECT company.symbol, 
+        financialdata.rank_pe_ratio_ftm + financialdata.rank_return_on_assets AS score
+        FROM company 
+        INNER JOIN financialdata on company.id = financialdata.company_id
+        AND financialdata.rank_pe_ratio_ftm IS NOT Null 
+        AND financialdata.rank_return_on_assets IS NOT Null
+        AND company.sector IS NOT 'Finance' 
+        AND company.sector IS NOT 'Energy'
+        AND company.sector IS NOT 'Miscellaneous'
+        AND company.sector NOT LIKE '%Utilities%'
+        ORDER BY score ASC'''
+        )
+    
+    rankings = alg.getRank(query, strategy)
+    for x in rankings:
+        print "setting %s --- %s = %s" % (x['symbol'], strategy, x[strategy])
+        data.set_financial_data(
+            company = x["company"],
+            symbol = x["symbol"],
+            date=get_time(),
+            magic_formula_future = x[strategy]
+        )
 
-def rank_financials():
+
+def calc_ranks():
     attributes = {
 #        "ask" : "desc",
 #        "book_value" : "desc",
@@ -105,6 +160,8 @@ def rank_financials():
         "return_on_equity" : "desc",
         "change_year_low_per" : "desc",
         "change_year_high_per" : "desc",
+        "magic_formula_trailing" : "asc",
+        "magic_formula_future" : "asc",
 #        "net_income" : "desc",
 #        "total_assets" : "desc",
 #        "OneyrTargetPrice" : "desc",
@@ -148,13 +205,11 @@ def rank_financials():
     
 def main():
 
- 
     calc_pe_ratio_ftm()
-    
     calc_garp_ratio()
-    
-    rank_financials()
-
+    calc_magic_formula_trailing() 
+    calc_magic_formula_future() 
+    calc_ranks()
 
 if __name__ == '__main__':
     main()

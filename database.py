@@ -47,6 +47,8 @@ class FinancialData(BaseModel):
     EPSEstimateCurrentYear = DoubleField(null=True)
     EPSEstimateNextYear = DoubleField(null=True)
     EPSEstimateNextQuarter = DoubleField(null=True)
+    magic_formula_trailing = DoubleField(null=True)
+    magic_formula_future = DoubleField(null=True)
     
     rank_ask = DecimalField(null=True)
     rank_book_value = DecimalField(null=True)
@@ -68,6 +70,8 @@ class FinancialData(BaseModel):
     rank_EPSEstimateCurrentYear = DecimalField(null=True)
     rank_EPSEstimateNextYear = DecimalField(null=True)
     rank_EPSEstimateNextQuarter = DecimalField(null=True)
+    rank_magic_formula_trailing = DecimalField(null=True)
+    rank_magic_formula_future = DecimalField(null=True)
 
     class Meta:
         indexes = (

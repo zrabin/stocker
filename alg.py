@@ -18,6 +18,7 @@ def getRank(model, strategy):
         symbol = company.symbol
         score = company.score
         values = {}
+        values.update({"company" : company})
         values.update({"rank" : rank})
         values.update({"symbol" : symbol})
         values.update({strategy : score})
@@ -45,7 +46,7 @@ class Alg(object):
             ]
     
     
-    def getMagicFormulaTrailing(self, companies=None):
+    def calcMagicFormulaTrailing(self, companies=None):
         
         strategy = "magic_formula_ttm"
         
@@ -68,7 +69,7 @@ class Alg(object):
         return rankings
     
     
-    def getMagicFormulaFuture(self, companies=None):
+    def calcMagicFormulaFuture(self, companies=None):
         
         strategy = "magic_formula_ftm"
         
@@ -90,7 +91,7 @@ class Alg(object):
 
         return rankings
 
-    def getGARP(self, companies=None):
+    def calcGARP(self, companies=None):
         
         strategy = "GARP"
         
@@ -112,69 +113,63 @@ class Alg(object):
         return rankings
                 
     
-    def getRankings(self, strategy):
-        
-        alg = Alg()
-        strategies = self.strategies
-
-        if strategy == "magic_formula_ttm":
-            return alg.getMagicFormulaTrailing()
-        
-        elif strategy == "garp_ratio":
-            return alg.getGARP()
-        
-        elif strategy == "magic_formula_ftm":
-            return alg.getMagicFormulaFuture()
-        
-        elif strategy == "all":
-            strat_map = {
-            "magic_formula_future" : alg.getMagicFormulaFuture(),
-            "magic_formula_trailing" : alg.getMagicFormulaTrailing(),
-            "garp" : alg.getGARP()
-            }
-            
-            symbols = set()
-            
-            for s in strat_map.keys():
-                ranks = strat_map[s]
-                for r in ranks:
-                    symbol = r['symbol']
-                    symbols.add(symbol)
-            
-            symbols = list(symbols)
-
-            return symbols
-
-
-        else:
-            return "That's not a valid strategy %s" % strategies
-
-
-    def getCompany(self, company):
-        
-        companies = Alg().toList(company)
-        strategies = self.strategies
-        
-        data = []
-        for company in companies:
-            values = {}
-            values.update({"symbol" : company})
-
-            for strategy in strategies:
-                rank = Alg().getRankings(strategy)
-                
-                for x in rank:
-                    if x["symbol"] != company:
-                        continue
-                    
-                    elif x["symbol"] == company:
-                        score = {strategy : x["rank"]}
-                        values.update(score)
-
-                    else:
-                        values.update({"error" : "could not find that ticker"})
-                    
-                    data.append(values)
- 
-        return data
+#    def getRankings(self, strategy):
+#        
+#        alg = Alg()
+#        strategies = self.strategies
+#
+#        if strategy == "magic_formula_ttm":
+#            return alg.getMagicFormulaTrailing()
+#        
+#        elif strategy == "garp_ratio":
+#            return alg.getGARP()
+#        
+#        elif strategy == "magic_formula_ftm":
+#            return alg.getMagicFormulaFuture()
+#        
+#        elif strategy == "all":
+#            
+#            magic_formula_future = alg.getMagicFormulaFuture(),
+#            magic_formula_trailing  = alg.getMagicFormulaTrailing(),
+#            garp = alg.getGARP()
+#            
+#            rankings = {
+#            "magic_formula_future" : magic_formula_future,
+#            "magic_formula_trailing" : magic_formula_trailing,
+#            "garp" : garp
+#            }
+#            
+#            return rankings
+#
+#        else:
+#            return "That's not a valid strategy %s" % strategies
+#
+#
+#    def getCompany(self, company):
+#        
+#        companies = Alg().toList(company)
+#        strategies = self.strategies
+#        
+#        data = []
+#        for company in companies:
+#            values = {}
+#            values.update({"symbol" : company})
+#
+#            for strategy in strategies:
+#                rank = Alg().getRankings(strategy)
+#                
+#                for x in rank:
+#                    if x["symbol"] != company:
+#                        continue
+#                    
+#                    elif x["symbol"] == company:
+#                        score = {strategy : x["rank"]}
+#                        values.update(score)
+#
+#                    else:
+#                        values.update({"error" : "could not find that ticker"})
+#                    
+#                    data.append(values)
+# 
+#        return data
 
