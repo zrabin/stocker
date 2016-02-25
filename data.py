@@ -17,6 +17,9 @@ def set_financial_data(company, symbol, date, **kwargs):
     model, _ = d.FinancialData.create_or_get(company=company, symbol=symbol, date=date, **kwargs)
     return save_model(model, kwargs)
 
+def get_financial_data():
+    return d.FinancialData.select()
+
 def get_companies():
     return d.Company.select().where(
         ~(d.Company.symbol ** '%^%' | d.Company.symbol ** '%.%'
