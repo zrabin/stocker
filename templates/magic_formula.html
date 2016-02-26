@@ -3,9 +3,9 @@
   <h2>Login</h2>
 
 	{% for entry in Entries %}
-	    <strong>ID:</strong> {{ entry.ID }}
+	    <strong>Rank:</strong> {{ entry.rank_magic_formula_trailing }}
 	    <strong>Symbol:</strong> {{ entry.symbol }}
-	    <strong>Magic Formula:</strong> {{ entry.magic_formula_trailing }} <br>
+	    <strong>MF Score:</strong> {{ entry.magic_formula_trailing }} <br>
 	{% endfor %}
 
 {% endblock %}

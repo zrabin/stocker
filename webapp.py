@@ -28,12 +28,26 @@ app.config.from_envvar('STOCKER', silent=True)
 def connect_db():
     return sqlite3.connect(app.config['DATABASE'])
 
+@app.route('/')
+def slash():
+    return redirect(url_for('magic_formula'))
+
 @app.route('/magic_formula')
 def magic_formula():
     db = connect_db()
-    cur = db.execute('select company_id, symbol, magic_formula_trailing from financialdata where magic_formula_trailing > 0 order by magic_formula_trailing')
+    cur = db.execute(
+	'''SELECT company_id, symbol, magic_formula_trailing, rank_magic_formula_trailing 
+	FROM financialdata 
+	WHERE magic_formula_trailing > 0 
+	ORDER BY magic_formula_trailing'''
+	)
 
-    entries = [dict(ID=row[0], symbol=row[1], magic_formula_trailing=row[2]) for row in cur.fetchall()]
+    entries = [dict(
+	ID=row[0], 
+	symbol=row[1], 
+	magic_formula_trailing=row[2],
+	rank_magic_formula_trailing=row[3],
+	) for row in cur.fetchall()]
     db.close()
     return render_template('magic_formula.html', Entries=entries)
 
@@ -60,4 +74,4 @@ def logout():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=4444)
+    app.run(host='0.0.0.0', port=80)
