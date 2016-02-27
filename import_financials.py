@@ -101,85 +101,7 @@ def decode_quandl(string):
     value = (value_list[-1])
     return value
 
-def get_quandl(companies):
-
-    for i, company in enumerate(companies):
-        
-        q_codes ={
-            "net_income" : "NET_INCOME_Q",
-            "total_assets" : "TOTAL_ASSETS_Q",
-            "shares_outstanding" : "TOTAL_COMMON_SHARES_OUTSTANDING_Q"
-            }
-
-        financials = {}
-        
-        LOGGER.info('Getting quandl income & assets for: %s' % company.symbol)                          
-        
-        for k, v in q_codes.iteritems():
-            code = "RAYMOND/" + company.symbol + "_" + v
-
-            try:
-                stat = Quandl.get(code, rows="1", authtoken=QUAND_KEY)
-                stat = decode_quandl(stat)
-                stat = decode_float(stat)
-                financials.update({k : stat})
-                    
-            except:
-                stat = "N/A"
-                stat = decode_float(stat)
-                financials.update({k : stat})
-            
-        LOGGER.info('%s --- %s:' % (company.symbol, financials))                          
-        timestamp = get_time()
-        data.set_financial_data(
-            company=company, 
-            symbol=company.symbol,
-            date=timestamp,
-            **financials
-            )
-        
-
-def yahoo_finance_quotes(sleep_time):
-    
-    companies = list(data.get_companies())
-    companies = [companies[i:i+BATCH] for i in range(0, len(companies), BATCH)]
-
-    for i, batch in enumerate(companies):
-        if i > 0: time.sleep(sleep_time)
-
-        batch = dict([(c.symbol, c) for c in batch])
-        url = 'https://query.yahooapis.com/v1/public/yql'
-        params = {
-            'q': 'select * from yahoo.finance.quotes where symbol IN ("%s")' % '", "'.join(batch.keys()),
-            'format': 'json',
-            'env': 'http://datatables.org/alltables.env',
-        }
-        response = requests.get(url, params=params)
-        body = response.json()
-
-        LOGGER.info('Getting quotes: %s' % ', '.join(batch.keys()))
-
-        for item in body['query']['results']['quote']:
-            company = batch[item['symbol']]
-            timestamp = get_time()
-            data.set_financial_data(
-                company=company,
-                symbol=company.symbol,
-                date=timestamp,
-                ask=decode_money(item.get('Ask')),
-                market_cap=decode_money(item.get('MarketCapitalization')),
-                ebitda=decode_money(item.get('EBITDA')),
-                pe_ratio_ttm=decode_float(item.get('PERatio')),
-                peg_ratio=decode_float(item.get('PEGRatio')),
-                DividendYield = decode_float(item.get('DividendYield')),
-                OneyrTargetPrice = decode_float(item.get('OneyrTargetPrice')),
-                EPSEstimateCurrentYear = decode_float(item.get('EPSEstimateCurrentYear')),
-                EPSEstimateNextYear = decode_float(item.get('EPSEstimateNextYear')),
-                EPSEstimateNextQuarter = decode_float(item.get('EPSEstimateNextQuarter')),
-            )
-
-
-def get_yahoo_finance_ks(companies):
+def get_yahoo_roa(companies):
     
     url = 'https://finance.yahoo.com/q/ks'
     
@@ -224,6 +146,85 @@ def get_yahoo_finance_ks(companies):
         else:
             LOGGER.info('Skipping ks: %s' % company.symbol)
 
+
+def get_quandl(companies):
+
+    for i, company in enumerate(companies):
+        
+        q_codes ={
+            "net_income" : "NET_INCOME_Q",
+            "total_assets" : "TOTAL_ASSETS_Q",
+            "shares_outstanding" : "TOTAL_COMMON_SHARES_OUTSTANDING_Q"
+            }
+
+        financials = {}
+        
+        LOGGER.info('Getting quandl income & assets for: %s' % company.symbol)                          
+        
+        for k, v in q_codes.iteritems():
+            code = "RAYMOND/" + company.symbol + "_" + v
+
+            try:
+                stat = Quandl.get(code, rows="1", authtoken=QUAND_KEY)
+                stat = decode_quandl(stat)
+                stat = decode_float(stat)
+                financials.update({k : stat})
+                    
+            except:
+                stat = "N/A"
+                stat = decode_float(stat)
+                financials.update({k : stat})
+            
+        LOGGER.info('%s --- %s:' % (company.symbol, financials))                          
+        timestamp = get_time()
+        data.set_financial_data(
+            company=company, 
+            symbol=company.symbol,
+            date=timestamp,
+            **financials
+            )
+        
+
+def yahoo_finance(sleep_time):
+    
+    companies = list(data.get_companies())
+    companies = [companies[i:i+BATCH] for i in range(0, len(companies), BATCH)]
+
+    for i, batch in enumerate(companies):
+        if i > 0: time.sleep(sleep_time)
+
+        batch = dict([(c.symbol, c) for c in batch])
+        url = 'https://query.yahooapis.com/v1/public/yql'
+        params = {
+            'q': 'select * from yahoo.finance.quotes where symbol IN ("%s")' % '", "'.join(batch.keys()),
+            'format': 'json',
+            'env': 'http://datatables.org/alltables.env',
+        }
+        response = requests.get(url, params=params)
+        body = response.json()
+
+        LOGGER.info('Getting quotes: %s' % ', '.join(batch.keys()))
+
+        for item in body['query']['results']['quote']:
+            company = batch[item['symbol']]
+            timestamp = get_time()
+            data.set_financial_data(
+                company=company,
+                symbol=company.symbol,
+                date=timestamp,
+                ask=decode_money(item.get('Ask')),
+                market_cap=decode_money(item.get('MarketCapitalization')),
+                ebitda=decode_money(item.get('EBITDA')),
+                pe_ratio_ttm=decode_float(item.get('PERatio')),
+                peg_ratio=decode_float(item.get('PEGRatio')),
+                DividendYield = decode_float(item.get('DividendYield')),
+                OneyrTargetPrice = decode_float(item.get('OneyrTargetPrice')),
+                EPSEstimateCurrentYear = decode_float(item.get('EPSEstimateCurrentYear')),
+                EPSEstimateNextYear = decode_float(item.get('EPSEstimateNextYear')),
+                EPSEstimateNextQuarter = decode_float(item.get('EPSEstimateNextQuarter')),
+            )
+
+
 def quandl(sleep_time):
     companies = list(data.get_companies())
 
@@ -237,7 +238,7 @@ def quandl(sleep_time):
     
     t.start()
 
-def yahoo_finance_ks(sleep_time):
+def yahoo_roa(sleep_time):
     companies = list(data.get_companies())
 
     companies = chunks(companies, BATCH)
@@ -245,7 +246,7 @@ def yahoo_finance_ks(sleep_time):
     work = []
     
     for c in companies:
-        t = threading.Thread(target=get_yahoo_finance_ks(c))
+        t = threading.Thread(target=get_yahoo_roa(c))
         work.append(t)
     
     t.start()
@@ -259,15 +260,15 @@ def main():
 
     subparsers = parser.add_subparsers()
 
-    parser_yahoo_finance_quotes = subparsers.add_parser('yahoo_finance_quotes')
-    parser_yahoo_finance_quotes.set_defaults(func=yahoo_finance_quotes)
+    parser_yahoo_finance = subparsers.add_parser('yahoo_finance')
+    parser_yahoo_finance.set_defaults(func=yahoo_finance)
     
-    parser_quandl_assets = subparsers.add_parser('quandl')
-    parser_quandl_assets.set_defaults(func=quandl)
+    parser_quandl = subparsers.add_parser('quandl')
+    parser_quandl.set_defaults(func=quandl)
 
 
-    parser_yahoo_finance_ks = subparsers.add_parser('yahoo_finance_ks')
-    parser_yahoo_finance_ks.set_defaults(func=yahoo_finance_ks)
+    parser_yahoo_roa = subparsers.add_parser('yahoo_roa')
+    parser_yahoo_roa.set_defaults(func=yahoo_roa)
     
     args = parser.parse_args()
     args.func(sleep_time=args.sleep_time)

@@ -1,1 +1,0 @@
-select company.symbol, company.name, financialdata.pe_ratio_ttm from company inner join financialdata on company.id = financialdata.company_id where financialdata.pe_ratio_ttm > 0 order by financialdata.pe_ratio_ttm desc;
