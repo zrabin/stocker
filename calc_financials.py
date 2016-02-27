@@ -9,15 +9,16 @@ import data
 import alg
 import database as d
 
-#LOGGER = logging.getLogger('import_financial_data')
-#MONEY = { '': 10**3, 'M': 10**6, 'B': 10**9 }
-#MONEY_RE = re.compile(r'^\$?(\-?\d+\.?\d*)([MB])?$')
+LOGGER = logging.getLogger('calc_financials')
 
 def get_time():
     now = datetime.date.today()
     return now
 
 def calc_pe_ratio_ftm():
+    
+    LOGGER.info('Calculating pe ratio')
+
     query = d.Company.raw(
         '''SELECT company.symbol, 
         financialdata.ask / financialdata.EPSEstimateNextYear AS future_pe      
@@ -40,9 +41,10 @@ def calc_pe_ratio_ftm():
             "pe_ratio_ftm" : pe_ratio_ftm
         })
         financials.append(values)
-   
+  
+    count = 0
     for x in financials:
-        print "setting %s --- pe_ratio_ftm = %s" % (x['symbol'], x['pe_ratio_ftm'])
+        count = count + 1
         data.set_financial_data(
             company=x["company"],
             symbol=x["symbol"],
@@ -50,10 +52,14 @@ def calc_pe_ratio_ftm():
             pe_ratio_ftm=x["pe_ratio_ftm"]
         )
 
+    LOGGER.info('Finished calculating pe_ratio - %s total calculations' % count)
     return financials
 
 
 def calc_garp_ratio():
+    
+    LOGGER.info('Calculating garp ratio')
+    
     query = d.Company.raw(
         '''SELECT company.symbol, 
         financialdata.pe_ratio_ttm / financialdata.peg_ratio as garp_ratio  
@@ -76,18 +82,23 @@ def calc_garp_ratio():
             "garp_ratio" : garp_ratio
         })
         financials.append(values)
-   
+    
+    count = 0
     for x in financials:
-        print "setting %s --- garp_ratio = %s" % (x['symbol'], x['garp_ratio'])
+        count = count + 1
         data.set_financial_data(
             company=x["company"],
             symbol=x["symbol"],
             date=get_time(),
             garp_ratio=x["garp_ratio"]
         )
+    
+    LOGGER.info('Finished calculating garp_ratio - %s total calculations' % count)
 
 
 def calc_magic_formula_trailing():
+    
+    LOGGER.info('Calculating Magic Formula Trailing')
     
     strategy = "magic_formula_ttm"
     
@@ -106,17 +117,22 @@ def calc_magic_formula_trailing():
         )
 
     rankings = alg.getRank(query, strategy)
+    count = 0
     for x in rankings:
-        print "setting %s --- %s = %s" % (x['symbol'], strategy, x[strategy])
+        count = count + 1
         data.set_financial_data(
             company = x["company"],
             symbol = x["symbol"],
             date=get_time(),
             magic_formula_trailing = x[strategy]
         )
+    
+    LOGGER.info('Finished calculating Magic F Trailing - %s total calculations' % count)
 
 
 def calc_magic_formula_future():
+    
+    LOGGER.info('Calculating Magic Formula Future')
     
     strategy = "magic_formula_ftm"
     
@@ -133,19 +149,23 @@ def calc_magic_formula_future():
         AND company.sector NOT LIKE '%Utilities%'
         ORDER BY score ASC'''
         )
-    
+   
     rankings = alg.getRank(query, strategy)
+    count = 0
     for x in rankings:
-        print "setting %s --- %s = %s" % (x['symbol'], strategy, x[strategy])
+        count = count + 1
         data.set_financial_data(
             company = x["company"],
             symbol = x["symbol"],
             date=get_time(),
             magic_formula_future = x[strategy]
         )
+    
+    LOGGER.info('Finished calculating Magic F Future - %s total calculations' % count)
 
 
 def calc_ranks():
+    
     attributes = {
 #        "ask" : "desc",
 #        "book_value" : "desc",
@@ -171,24 +191,30 @@ def calc_ranks():
 #        "EPSEstimateNextQuarter" : "desc"
     }
 
+    LOGGER.info('Calculating Ranks for %s' % attributes.keys())
+    
     for f in attributes.keys():
         if attributes[f] == "asc":
+            LOGGER.info('Calculating %s %s' % (f, attributes[f]))
+            
             query = d.FinancialData.select(
                 d.FinancialData.symbol,
                 getattr(d.FinancialData, f)).where(
                 getattr(d.FinancialData, f).is_null(False)).order_by(
                 getattr(d.FinancialData, f))
+        
         elif attributes[f] == "desc":
+            LOGGER.info('Calculating %s %s' % (f, attributes[f]))
+            
             query = d.FinancialData.select(
                 d.FinancialData.symbol,
                 getattr(d.FinancialData, f)).where(
                 getattr(d.FinancialData, f).is_null(False)).order_by(
                 getattr(d.FinancialData, f).desc())
         
-        #    getattr(d.FinancialData, f)
         financial_data = []
-
-        for rank, row in enumerate(query):
+	
+	for rank, row in enumerate(query):
             company = row.symbol
             field = "rank_" + f
             rank = rank + 1
@@ -199,11 +225,11 @@ def calc_ranks():
             field = key["field"]
             rank = key["rank"]
             date = get_time()
-            print "Setting %s rank for %s to %s" % (field, company, rank)
             data.set_rank(company, date, field, rank)
-
     
 def main():
+
+    common.setup_logging()
 
     calc_pe_ratio_ftm()
     calc_garp_ratio()
