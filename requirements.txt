@@ -1,3 +1,4 @@
+markupsafe
 beautifulsoup4
 pysqlite
 pyasn1

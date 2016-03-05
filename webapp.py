@@ -30,10 +30,10 @@ def connect_db():
 
 @app.route('/')
 def slash():
-    return redirect(url_for('magic_formula'))
+    return redirect(url_for('results'))
 
-@app.route('/magic_formula')
-def magic_formula():
+@app.route('/results')
+def results():
     db = connect_db()
     cur = db.execute(
 	'''SELECT company_id, symbol, magic_formula_trailing, rank_magic_formula_trailing 
@@ -43,13 +43,13 @@ def magic_formula():
 	)
 
     entries = [dict(
-	ID=row[0], 
-	symbol=row[1], 
-	magic_formula_trailing=row[2],
-	rank_magic_formula_trailing=row[3],
+	ID = row[0], 
+	symbol = row[1], 
+	strategy = row[2],
+	rank = row[3],
 	) for row in cur.fetchall()]
     db.close()
-    return render_template('magic_formula.html', Entries=entries)
+    return render_template('results.html', Entries=entries)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -62,7 +62,7 @@ def login():
         else:
             session['logged_in'] = True
             flash('You were logged in')
-            return redirect(url_for('magic_formula'))
+            return redirect(url_for('results'))
     return render_template('login.html', error=error)
 
 
