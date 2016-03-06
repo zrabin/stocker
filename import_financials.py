@@ -9,10 +9,19 @@ import re
 import requests
 from bs4 import BeautifulSoup
 import threading
-
 import common
 import data
 import Quandl
+
+####
+# Setup tor to use for all imports
+import socks
+import socket 
+import requests
+
+socks.setdefaultproxy(proxy_type=socks.PROXY_TYPE_SOCKS5, addr="127.0.0.1", port=9050)
+socket.socket = socks.socksocket
+#####
 
 QUAND_KEY = "1BCHxHp1ExoE4hXRmafE"
 BATCH = 100
