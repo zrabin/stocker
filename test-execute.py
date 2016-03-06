@@ -4,9 +4,6 @@ from alg import Alg
 import data
 
 
-data4 = Alg().getRankings(strategy="all")
-
-
 companies = list(data.get_companies())                                      
 
 companies = [c.symbol for c in companies]

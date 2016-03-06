@@ -5,7 +5,7 @@
 # You can find out more about blueprints at
 # http://flask.pocoo.org/docs/blueprints/
 
-import sqlite3
+import data
 
 from flask import Blueprint, render_template, flash, redirect, url_for
 from flask_bootstrap import __version__ as FLASK_BOOTSTRAP_VERSION
@@ -40,9 +40,6 @@ nav.register_element('frontend_top', Navbar(
     ),
 ))
 
-def connect_db():
-    return sqlite3.connect('stocker/stocker.db')
-
 # Our index-page just shows a quick explanation. Check out the template
 # "templates/index.html" documentation for more details.
 @frontend.route('/')
@@ -51,21 +48,15 @@ def index():
 
 @frontend.route('/results')
 def results():
-    db = connect_db()
-    cur = db.execute(
-	'''SELECT company_id, symbol, magic_formula_trailing, rank_magic_formula_trailing 
-	FROM financialdata 
-	WHERE magic_formula_trailing > 0 
-	ORDER BY magic_formula_trailing'''
-	)
+    mf_ranks = data.get_magic_formula_trailing()
 
     entries = [dict(
-	ID = row[0], 
-	symbol = row[1], 
-	strategy = row[2],
-	rank = row[3],
-	) for row in cur.fetchall()]
-    db.close()
+	ID = rank.id, 
+	symbol = rank.symbol, 
+	rank = rank.rank,
+	score = rank.score
+	) for rank in mf_ranks]
+    
     return render_template('results.html', Entries=entries)
 
 # Shows a long signup form, demonstrating form rendering.

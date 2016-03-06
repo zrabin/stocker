@@ -1,12 +1,9 @@
 #!/usr/bin/env python
 
-import os
-
 from peewee import *
 from playhouse import db_url
 
-db = db_url.connect(os.environ.get('DATABASE_URL', 'sqlite:///stocker.db'))
-#db = db_url.connect(os.environ.get('DATABASE_URL', 'postgresql://localhost:5432/stocker'))
+db = db_url.connect('sqlite:///stocker.db')
 
 
 class BaseModel(Model):

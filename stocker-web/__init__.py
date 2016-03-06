@@ -13,7 +13,7 @@
 # source.
 
 from flask import Flask
-from flask_appconfig import AppConfig
+#from flask_appconfig import AppConfig
 from flask_bootstrap import Bootstrap
 
 from frontend import frontend
@@ -29,8 +29,8 @@ def create_app(configfile=None):
 
     app = Flask(__name__)
 
-    # We use Flask-Appconfig here, but this is not a requirement
-    AppConfig(app)
+#    # We use Flask-Appconfig here, but this is not a requirement
+#    AppConfig(app, 'config.cfg')
     
     # Install our Bootstrap extension
     Bootstrap(app)
@@ -48,3 +48,4 @@ def create_app(configfile=None):
     nav.init_app(app)
     
     return app
+
