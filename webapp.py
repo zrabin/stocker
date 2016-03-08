@@ -21,8 +21,8 @@ nav.register_element('frontend_top', Navbar(
 #    View('Forms Example', '.example_form'),
     Subgroup(
         'Rankings',
-        View('Magic Formula Trailing', '.mft'),
-        View('Magic Formula Future', '.mff'),
+#        View('Magic Formula Trailing', '.mft'),
+#        View('Magic Formula Future', '.mff'),
         ),
     Subgroup(
         'Development',
