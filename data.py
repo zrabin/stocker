@@ -39,7 +39,7 @@ def set_rank(symbol, date, field, rank):
     return save_model(model, kwargs)
 
 def get_magic_formula_trailing():
-    query = d.Company.raw(
+    return d.Company.raw(
         '''SELECT company.id, company.symbol, 
         financialdata.magic_formula_trailing AS score, 
         financialdata.rank_magic_formula_trailing AS rank
@@ -48,6 +48,14 @@ def get_magic_formula_trailing():
         WHERE rank > 0 
         ORDER BY rank ASC'''
         )
-    return query
 
-
+def get_magic_formula_future():
+    return d.Company.raw(
+        '''SELECT company.id, company.symbol, 
+        financialdata.magic_formula_future AS score, 
+        financialdata.rank_magic_formula_future AS rank
+        FROM company 
+        INNER JOIN financialdata on company.id = financialdata.company_id
+        WHERE rank > 0 
+        ORDER BY rank ASC'''
+        )
