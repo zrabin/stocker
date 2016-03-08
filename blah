@@ -1,0 +1,15 @@
+rank_market_cap 
+rank_ebitda 
+rank_pe_ratio_ttm 
+rank_pe_ratio_ftm 
+rank_peg_ratio 
+rank_garp_ratio 
+rank_return_on_assets 
+rank_return_on_equity 
+rank_OneyrTargetPrice 
+rank_DividendYield 
+rank_EPSEstimateCurrentYear 
+rank_EPSEstimateNextYear 
+rank_EPSEstimateNextQuarter 
+rank_magic_formula_trailing 
+rank_magic_formula_future 

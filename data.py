@@ -59,3 +59,13 @@ def get_magic_formula_future():
         WHERE rank > 0 
         ORDER BY rank ASC'''
         )
+
+def get_rank(column):
+    return d.Company.raw(
+        '''SELECT company.id, company.symbol, 
+        financialdata.%s AS rank
+        FROM company
+        INNER JOIN financialdata on company.id = financialdata.company_id
+        WHERE rank > 0
+        ORDER BY rank ASC''', column
+        )

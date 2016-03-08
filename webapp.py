@@ -20,6 +20,11 @@ nav.register_element('frontend_top', Navbar(
     View('Magic Formula Future', '.mff'),
 #    View('Forms Example', '.example_form'),
     Subgroup(
+        'Rankings',
+        View('Magic Formula Trailing', '.mft'),
+        View('Magic Formula Future', '.mff'),
+        ),
+    Subgroup(
         'Development',
         Link('Flask-Bootstrap', 'http://pythonhosted.org/Flask-Bootstrap'),
         Link('Flask-AppConfig', 'https://github.com/mbr/flask-appconfig'),
