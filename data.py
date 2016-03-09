@@ -60,12 +60,15 @@ def get_magic_formula_future():
         ORDER BY rank ASC'''
         )
 
-def get_rank(column):
+def get_ranks(strategy):
+    
+    strat = "financialdata." + strategy
+    rank = "financialdata.rank_" + strategy
     return d.Company.raw(
         '''SELECT company.id, company.symbol, 
-        financialdata.%s AS rank
+        %s AS score, %s AS rank
         FROM company
         INNER JOIN financialdata on company.id = financialdata.company_id
         WHERE rank > 0
-        ORDER BY rank ASC''', column
+        ORDER BY rank ASC''' % (strat, rank)
         )
