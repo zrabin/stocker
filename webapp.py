@@ -16,13 +16,21 @@ nav = Nav()
 
 nav.register_element('frontend_top', Navbar(
     View('Stocker', '.index'),
-#    View('Magic Formula Trailing', '.mft'),
-#    View('Magic Formula Future', '.mff'),
-#    View('Forms Example', '.example_form'),
     Subgroup(
         'Rankings',
-#        View('Magic Formula Trailing', '.mft'),
-#        View('Magic Formula Future', '.mff'),
+        View('Magic Formula Trailing', 'rank', strategy = 'magic_formula_trailing'),
+        View('Magic Formula Future', 'rank', strategy = 'magic_formula_future'),
+        View('Market Cap', 'rank', strategy = 'market_cap'),
+        View('EBITDA', 'rank', strategy = 'ebitda'),
+        View('PE ratio trailing', 'rank', strategy = 'pe_ratio_ttm'),
+        View('PE ratio future', 'rank', strategy = 'pe_ratio_ftm'),
+        View('GARP ratio', 'rank', strategy = 'garp_ratio'),
+        View('Return on Assets', 'rank', strategy = 'return_on_assets'),
+        View('Return on Equity', 'rank', strategy = 'return_on_equity'),
+        View('Dividend Yield', 'rank', strategy = 'DividendYield'),
+        View('EPS estimate year', 'rank', strategy = 'EPSEstimateCurrentYear'),
+        View('EPS estimate next year', 'rank', strategy = 'EPSEstimateNextYear'),
+        View('EPS estimate next quarter', 'rank', strategy = 'EPSEStimateNextQuarter'),
         ),
     Subgroup(
         'Development',
@@ -57,21 +65,6 @@ def create_app(configfile=None):
     
     @app.route('/ranks/<strategy>')
 
-    #rank_market_cap = DecimalField(null=True)
-    #rank_ebitda = DecimalField(null=True)
-    #rank_pe_ratio_ttm = DecimalField(null=True)
-    #rank_pe_ratio_ftm = DecimalField(null=True)
-    #rank_peg_ratio = DecimalField(null=True)
-    #rank_garp_ratio = DecimalField(null=True)
-    #rank_return_on_assets = DecimalField(null=True)
-    #rank_return_on_equity = DecimalField(null=True)
-    #rank_DividendYield = DecimalField(null=True)
-    #rank_EPSEstimateCurrentYear = DecimalField(null=True)
-    #rank_EPSEstimateNextYear = DecimalField(null=True)
-    #rank_EPSEstimateNextQuarter = DecimalField(null=True)
-    #rank_magic_formula_trailing = DecimalField(null=True)
-    #rank_magic_formula_future = DecimalField(null=True)
-
     def rank(strategy):
         rankings = data.get_ranks(strategy)
     
@@ -85,19 +78,6 @@ def create_app(configfile=None):
         return render_template('results.html', Entries=entries)
     
     
-   # @app.route('/mff')
-   # def mff():
-   #     mf_ranks = data.get_magic_formula_future()
-   # 
-   #     entries = [dict(
-   # 	ID = rank.id, 
-   # 	symbol = rank.symbol, 
-   # 	rank = rank.rank,
-   # 	score = rank.score
-   # 	) for rank in mf_ranks]
-   #     
-   #     return render_template('results.html', Entries=entries)
-   # 
     ## Shows a long signup form, demonstrating form rendering.
     #@frontend.route('/example-form/', methods=('GET', 'POST'))
     #def example_form():
