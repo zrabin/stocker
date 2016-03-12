@@ -23,13 +23,22 @@
   {%- endif %}
   {%- endwith %}
     <div class="jumbotron">
-  	  <h2>Top picks</h2>
-
-  	    {% for entry in Entries %}
-  	        <strong>Rank:</strong> {{ entry.rank }}
-  	        <strong>Symbol:</strong> {{ entry.symbol }}
-  	        <strong>MF Score:</strong> {{ entry.score }} <br>
-  	    {% endfor %}
+      <div class="table-responsive">
+        <table class="table table-striped">
+		  <tr>
+		    <th> Rank </th>
+		    <th> Symbol </th>
+		    <th> Score </th>
+  	      </tr>
+            {% for entry in Entries %}
+  	            <tr>
+				  <td> {{ entry.rank }} </td>
+  	              <td> {{ entry.symbol }} </td>
+  	              <td> {{ entry.score }} </td>
+				</tr>
+  	        {% endfor %}
+		</table>
+      </div>
       <p>
         <a class="btn btn-lg btn-default" role="button"
            href="http://pythonhosted.org/Flask-Bootstrap" >Show docs</a>
