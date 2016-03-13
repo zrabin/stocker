@@ -52,19 +52,19 @@ def create_app(configfile=None):
 
     app = Flask(__name__)
 
-    # Install our Bootstrap extension
     Bootstrap(app)
 
     app.config['BOOTSTRAP_SERVE_LOCAL'] = True
     
     nav.init_app(app)
     
+    
     @app.route('/')
     def index():
         return render_template('index.html')
     
+    
     @app.route('/ranks/<strategy>')
-
     def rank(strategy):
         rankings = data.get_ranks(strategy)
     
@@ -72,10 +72,13 @@ def create_app(configfile=None):
     	ID = rank.id, 
     	symbol = rank.symbol, 
     	rank = rank.rank,
-    	score = rank.score
+    	score = rank.score,
+        link = "https://www.google.com/finance?q=" + rank.symbol
     	) for rank in rankings]
+
+        strategy = strategy.replace('_', ' ').title()
         
-        return render_template('results.html', Entries=entries)
+        return render_template('results.html', Entries=entries, Strategy=strategy)
     
     
     ## Shows a long signup form, demonstrating form rendering.
