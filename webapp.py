@@ -1,3 +1,6 @@
+import string
+import data
+
 from flask import Flask, render_template, flash                                 
 from flask_bootstrap import Bootstrap                                           
 from flask_appconfig import AppConfig                                           
@@ -9,8 +12,6 @@ from flask_wtf.file import FileField
 from wtforms import TextField, HiddenField, ValidationError, RadioField,\
     BooleanField, SubmitField, IntegerField, FormField, validators              
 from wtforms.validators import Required
-
-import data
 
 nav = Nav()
 
