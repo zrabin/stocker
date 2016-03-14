@@ -72,8 +72,10 @@ def create_app(configfile=None):
     	ID = rank.id, 
     	symbol = rank.symbol, 
     	rank = rank.rank,
+    	name = rank.name,
     	score = rank.score,
-        link = "https://www.google.com/finance?q=" + rank.symbol
+        link = "http://stockcharts.com/freecharts/perf.php?" + rank.symbol + "&n=200&O=011000"
+        #link = "https://www.google.com/finance?q=" + rank.symbol
     	) for rank in rankings]
 
         strategy = strategy.replace('_', ' ').title()

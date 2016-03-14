@@ -65,7 +65,7 @@ def get_ranks(strategy):
     strat = "financialdata." + strategy
     rank = "financialdata.rank_" + strategy
     return d.Company.raw(
-        '''SELECT company.id, company.symbol, 
+        '''SELECT company.id, company.symbol, company.name, 
         %s AS score, %s AS rank
         FROM company
         INNER JOIN financialdata on company.id = financialdata.company_id
