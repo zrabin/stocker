@@ -8,13 +8,20 @@ from flask_nav import Nav
 from flask_nav.elements import Navbar, View, Subgroup, Link, Text, Separator
 
 from flask_wtf import Form, RecaptchaField                                      
-from flask_wtf.file import FileField                                            
-from wtforms import TextField, HiddenField, ValidationError, RadioField,\
-    BooleanField, SubmitField, IntegerField, FormField, validators              
-from wtforms.validators import Required
+from wtforms import TextField, ValidationError, SubmitField, Form, validators              
+from wtforms.validators import Required, Email
 
+
+#form class setup
+class SignupForm(Form):
+    name = TextField(u'Your name', [validators.required()])
+    password = TextField(u'Your favorite password', [validators.required()])
+    email = TextField(u'Your email address', [validators.required()])
+    submit = SubmitField(u'Signup')
+
+
+#setup navigation
 nav = Nav()
-
 nav.register_element('frontend_top', Navbar(
     View('Stocker', '.index'),
     Subgroup(
@@ -52,13 +59,9 @@ nav.register_element('frontend_top', Navbar(
 def create_app(configfile=None):
 
     app = Flask(__name__)
-
     Bootstrap(app)
-
     app.config['BOOTSTRAP_SERVE_LOCAL'] = True
-    
     nav.init_app(app)
-    
     
     @app.route('/')
     def index():
@@ -85,23 +88,12 @@ def create_app(configfile=None):
     
     
     ## Shows a long signup form, demonstrating form rendering.
-    #@frontend.route('/example-form/', methods=('GET', 'POST'))
-    #def example_form():
-    #    form = SignupForm()
-    #
-    #    if form.validate_on_submit():
-    #        # We don't have anything fancy in our application, so we are just
-    #        # flashing a message when a user completes the form successfully.
-    #        #
-    #        # Note that the default flashed messages rendering allows HTML, so
-    #        # we need to escape things if we input user values:
-    #        flash('Hello, {}. You have successfully signed up'
-    #              .format(escape(form.name.data)))
-    #
-    #        # In a real application, you may wish to avoid this tedious redirect.
-    #        return redirect(url_for('.index'))
-    #
-    #    return render_template('signup.html', form=form)
+    @app.route('/signup/', methods=('GET', 'POST'))
+    def example_form():
+        form = SignupForm()
+    
+    
+        return render_template('signup.html', form=form)
     
     
     return app
