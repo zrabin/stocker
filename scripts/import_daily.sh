@@ -1,5 +1,6 @@
 #!/bin/bash
 
+#app_dir='/Users/cfischer/Code/stocker'
 app_dir='/srv/stocker'
 log_file='/tmp/stocker.log'
 

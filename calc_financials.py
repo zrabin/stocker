@@ -25,7 +25,7 @@ def calc_pe_ratio_ftm():
         FROM company 
         INNER JOIN financialdata on company.id = financialdata.company_id
         WHERE financialdata.ask IS NOT Null 
-        AND financialdata.EPSEstimateNextYear IS NOT Null
+        AND financialdata.EPSEstimateNextYear > 0
         ORDER BY company.symbol ASC'''
         )
     
@@ -65,8 +65,8 @@ def calc_garp_ratio():
         financialdata.pe_ratio_ttm / financialdata.peg_ratio as garp_ratio  
         FROM company 
         INNER JOIN financialdata on company.id = financialdata.company_id
-        WHERE financialdata.pe_ratio_ttm IS NOT Null 
-        AND financialdata.peg_ratio IS NOT Null
+        WHERE financialdata.pe_ratio_ttm > 0
+        AND financialdata.peg_ratio > 0
         ORDER BY company.symbol ASC'''
         )
     
@@ -107,8 +107,8 @@ def calc_magic_formula_trailing():
         financialdata.rank_pe_ratio_ttm + financialdata.rank_return_on_assets AS score
         FROM company 
         INNER JOIN financialdata on company.id = financialdata.company_id
-        WHERE financialdata.rank_pe_ratio_ttm IS NOT Null 
-        AND financialdata.rank_return_on_assets IS NOT Null
+        WHERE financialdata.rank_pe_ratio_ttm > 0
+        AND financialdata.rank_return_on_assets > 0
         AND company.sector IS NOT 'Finance' 
         AND company.sector IS NOT 'Energy'
         AND company.sector IS NOT 'Miscellaneous'
@@ -141,8 +141,8 @@ def calc_magic_formula_future():
         financialdata.rank_pe_ratio_ftm + financialdata.rank_return_on_assets AS score
         FROM company 
         INNER JOIN financialdata on company.id = financialdata.company_id
-        AND financialdata.rank_pe_ratio_ftm IS NOT Null 
-        AND financialdata.rank_return_on_assets IS NOT Null
+        AND financialdata.rank_pe_ratio_ftm > 0
+        AND financialdata.rank_return_on_assets > 0
         AND company.sector IS NOT 'Finance' 
         AND company.sector IS NOT 'Energy'
         AND company.sector IS NOT 'Miscellaneous'
