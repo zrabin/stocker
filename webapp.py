@@ -28,7 +28,6 @@ nav.register_element('frontend_top', Navbar(
         'Rankings',
         View('Magic Formula Trailing', 'rank', strategy = 'magic_formula_trailing'),
         View('Magic Formula Future', 'rank', strategy = 'magic_formula_future'),
-        View('Market Cap', 'rank', strategy = 'market_cap'),
         View('EBITDA', 'rank', strategy = 'ebitda'),
         View('PE ratio trailing', 'rank', strategy = 'pe_ratio_ttm'),
         View('PE ratio future', 'rank', strategy = 'pe_ratio_ftm'),
@@ -36,9 +35,6 @@ nav.register_element('frontend_top', Navbar(
         View('Return on Assets', 'rank', strategy = 'return_on_assets'),
         View('Return on Equity', 'rank', strategy = 'return_on_equity'),
         View('Dividend Yield', 'rank', strategy = 'DividendYield'),
-        View('EPS estimate year', 'rank', strategy = 'EPSEstimateCurrentYear'),
-        View('EPS estimate next year', 'rank', strategy = 'EPSEstimateNextYear'),
-        View('EPS estimate next quarter', 'rank', strategy = 'EPSEStimateNextQuarter'),
         ),
     Subgroup(
         'Development',
@@ -96,8 +92,7 @@ def create_app(configfile=None):
     @app.route('/signup/', methods=('GET', 'POST'))
     def example_form():
         form = SignupForm()
-    
-    
+        
         return render_template('signup.html', form=form)
     
     
