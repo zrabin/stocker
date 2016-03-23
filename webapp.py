@@ -78,7 +78,12 @@ def create_app(configfile=None):
     	rank = rank.rank,
     	name = rank.name,
     	score = rank.score,
-        link = "http://stockcharts.com/freecharts/perf.php?" + rank.symbol + "&n=200&O=011000"
+        link = "http://stockcharts.com/freecharts/perf.php?" + rank.symbol + "&n=200&O=011000",
+        pe_ttm = rank.pe_ratio_ttm,
+        pe_ftm = rank.pe_ratio_ftm,
+        garp = rank.garp,
+        peg = rank.peg,
+        roa = rank.roa
         #link = "https://www.google.com/finance?q=" + rank.symbol
     	) for rank in rankings]
 

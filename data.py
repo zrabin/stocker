@@ -66,7 +66,8 @@ def get_ranks(strategy):
     rank = "financialdata.rank_" + strategy
     return d.Company.raw(
         '''SELECT company.id, company.symbol, company.name, 
-        %s AS score, %s AS rank
+        %s AS score, %s AS rank, pe_ratio_ttm, pe_ratio_ftm, 
+        peg_ratio AS peg, garp_ratio as garp, return_on_assets as roa
         FROM company
         INNER JOIN financialdata on company.id = financialdata.company_id
         WHERE rank > 0
