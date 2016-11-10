@@ -180,8 +180,6 @@ def calc_ranks():
         "return_on_equity" : "desc",
         "change_year_low_per" : "desc",
         "change_year_high_per" : "desc",
-        "magic_formula_trailing" : "asc",
-        "magic_formula_future" : "asc",
 #        "net_income" : "desc",
 #        "total_assets" : "desc",
 #        "OneyrTargetPrice" : "desc",
@@ -194,6 +192,64 @@ def calc_ranks():
     LOGGER.info('Calculating Ranks for %s' % attributes.keys())
     
     for f in attributes.keys():
+        
+        rankfield = "rank_" + f
+        LOGGER.info('Clearing out old data from %s' % rankfield)
+        zeroize = d.Company.raw(
+            '''DELETE from financialdata 
+            WHERE %s''' % rankfield)
+                    
+        if attributes[f] == "asc":
+            LOGGER.info('Calculating %s %s' % (f, attributes[f]))
+            
+            query = d.FinancialData.select(
+                d.FinancialData.symbol,
+                getattr(d.FinancialData, f)).where(
+                getattr(d.FinancialData, f).is_null(False)).order_by(
+                getattr(d.FinancialData, f))
+        
+        elif attributes[f] == "desc":
+            LOGGER.info('Calculating %s %s' % (f, attributes[f]))
+            
+            query = d.FinancialData.select(
+                d.FinancialData.symbol,
+                getattr(d.FinancialData, f)).where(
+                getattr(d.FinancialData, f).is_null(False)).order_by(
+                getattr(d.FinancialData, f).desc())
+        
+        financial_data = []
+	
+	for rank, row in enumerate(query):
+            company = row.symbol
+            field = "rank_" + f
+            rank = rank + 1
+            financial_data.append({"company" : company, "field" : field, "rank" : rank})
+
+        for key in financial_data:
+            company = key["company"]
+            field = key["field"]
+            rank = key["rank"]
+            date = get_time()
+            data.set_rank(company, date, field, rank)
+    
+
+def calc_magic_formula_ranks():
+    
+    attributes = {
+        "magic_formula_trailing" : "asc",
+        "magic_formula_future" : "asc",
+    }
+
+    LOGGER.info('Calculating Ranks for %s' % attributes.keys())
+    
+    for f in attributes.keys():
+        
+        rankfield = "rank_" + f
+        LOGGER.info('Clearing out old data from %s' % rankfield)
+        zeroize = d.Company.raw(
+            '''DELETE from financialdata 
+            WHERE %s''' % rankfield)
+                    
         if attributes[f] == "asc":
             LOGGER.info('Calculating %s %s' % (f, attributes[f]))
             
@@ -233,9 +289,13 @@ def main():
 
     calc_pe_ratio_ftm()
     calc_garp_ratio()
+    
+    calc_ranks()
+    
     calc_magic_formula_trailing() 
     calc_magic_formula_future() 
-    calc_ranks()
+    
+    calc_magic_formula_ranks()
 
 if __name__ == '__main__':
     main()
