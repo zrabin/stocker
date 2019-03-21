@@ -1,0 +1,21 @@
+{% extends "templates/index.html" %}
+{% block content %}
+  <div class="row">
+    <form class="col s12" action="/user/create" method="POST">
+      <div class="row">
+        <div class="input-field col s6">
+          <i class="material-icons prefix">account_circle</i>
+          <input id="icon_prefix" name='email' type="text" class="validate">
+          <label for="icon_prefix">Email</label>
+        </div>
+        <div class="input-field col s6">
+          <i class="material-icons prefix">lock</i>
+          <input id="icon_prefix" name ='password' type="text" class="validate">
+          <label for="icon_prefix">Password</label>
+
+          <button type="submit">submit</button>
+        </div>
+      </div>
+    </form>
+  </div>
+{% endblock %}
