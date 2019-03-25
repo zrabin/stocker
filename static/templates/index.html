@@ -1,0 +1,31 @@
+<html>
+
+    <head>
+        <meta charset="utf-8">
+        <title>stockerApp - home of trillions and billions</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- Compiled and minified CSS -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link rel="shortcut icon" type="image/png" href="./src/images/favicon.png"/>
+        <link rel="stylesheet" type="text/css" href="http://localhost:3000/dist/bundle.css"/>
+        <link href='https://fonts.googleapis.com/css?family=Roboto:400,300,500' rel='stylesheet' type='text/css'>
+
+    </head>
+
+    <body>
+        {{ react_component('Header')|safe }}
+        <div class="container">
+             <br> <a href="http://localhost:5000/user/new">Create User</a> </br>
+             <br> <a href="http://localhost:5000/user/invite">Invite User</a> </br>
+             <br> <div id="content">{% block content %}{% endblock %}</div> </br>
+        </div>
+        <!--{{ react_component('Footer')|safe }}-->
+    </body>
+
+    <script src="http://localhost:3000/dist/bundle.js"></script>
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/js/materialize.min.js"></script>
+
+</html>
